@@ -20,8 +20,12 @@
 
 % Custom commands
 \newcommand{\R}{\mathbb{R}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
 \newcommand{\M}{\mathcal{M}}
 \newcommand{\T}{\mathbb{T}}
+\newcommand{\FIM}{\mathcal{I}}
 
 \title{Information Geometry of Nested Frequency Hierarchies: \\
 Why Biological Systems Exhibit High-Dimensional Coherence}
@@ -37,275 +41,414 @@ Sydney Medical School, University of Sydney\\
 \maketitle
 
 \begin{abstract}
-Biological systems from neural circuits to cellular networks exhibit nested frequency hierarchies: oscillations at multiple timescales with systematic phase-amplitude coupling between scales. We show this architecture has a natural information-geometric interpretation: nested frequencies create a product manifold structure whose dimension equals the number of frequency bands. The Fisher information matrix on this product manifold has rank determined by the coupling structure between bands. We prove that (1) $K$ nested frequency bands create a phase manifold of dimension $K-1$ (after quotienting global phase), (2) inter-band coupling activates off-diagonal Fisher information, increasing identifiable rank, and (3) global clock synchronization collapses the product structure to a 1-dimensional constraint submanifold, reducing Fisher rank to at most 1. These results provide a geometric foundation for why biological substrates support high-dimensional coherent dynamics while clocked digital systems do not. The framework connects frequency nesting---a ubiquitous feature of living systems---to the dimensional requirements for adaptive behavior.
+Biological systems from neural circuits to cellular networks exhibit nested frequency hierarchies: oscillations at multiple timescales with systematic phase-amplitude coupling between scales. We provide an information-geometric framework showing how this architecture creates high-dimensional statistical structure. Under a generative model where slow oscillatory phases modulate fast dynamics, we prove that: (1) $K$ frequency bands induce a $(K-1)$-dimensional parameter space of relative phases after quotienting global phase; (2) phase-amplitude coupling generically produces off-diagonal Fisher information, enabling identification of slow phase from fast-band observations that would otherwise be unidentifiable; and (3) global clock synchronization collapses the accessible parameter family to at most one dimension. A worked example with theta-gamma coupling demonstrates how coupling activates identifiability: without modulation, slow phase drops out of the likelihood; with modulation, it becomes estimable. These results clarify the geometric basis for why biological substrates---which universally employ nested frequency architectures---support richer statistical structure than globally clocked systems.
 \end{abstract}
 
-\noindent\textbf{Keywords:} Fisher information, product manifolds, phase coupling, biological oscillations, dimensional coherence
+\noindent\textbf{Keywords:} Fisher information, product manifolds, phase-amplitude coupling, biological oscillations, identifiability
 
+%=============================================================================
 \section{Introduction}
+%=============================================================================
 
-Biological systems operate through nested oscillatory hierarchies. In neural systems, gamma oscillations (30--80 Hz) are modulated by theta rhythms (4--8 Hz), which are in turn modulated by slower delta and infra-slow fluctuations \citep{buzsaki2006rhythms}. In cellular biology, circadian rhythms (24 h) organize ultradian metabolic cycles (hours) which contain faster enzymatic oscillations (seconds to minutes) \citep{lloyd2006ultradian}. In ecosystems, seasonal cycles modulate shorter reproductive and behavioral rhythms \citep{helm2017annual}.
+Biological systems operate through nested oscillatory hierarchies. In neural systems, gamma oscillations (30--80 Hz) are modulated by theta rhythms (4--8 Hz), which are in turn modulated by slower delta and infra-slow fluctuations \citep{buzsaki2006rhythms}. In cellular biology, circadian rhythms organize ultradian metabolic cycles which contain faster enzymatic oscillations \citep{lloyd2006ultradian}. This hierarchical frequency organization appears ubiquitous across living systems \citep{helm2017annual}.
 
-This hierarchical frequency organization is not incidental. Recent theoretical work proposes that intelligence arises from the maintenance of high-dimensional coherent dynamics \citep{todd2026intelligence}---systems that sustain many coupled degrees of freedom beyond what external observers can track. But where does this dimensionality come from?
+Recent theoretical work proposes that intelligence arises from maintaining high-dimensional coherent dynamics \citep{todd2026intelligence}---systems that sustain many coupled degrees of freedom. But where does this dimensionality come from, and what makes it statistically meaningful?
 
-We argue that \textbf{nested frequency hierarchies are the architectural basis of high-dimensional coherence}. Each frequency band contributes a phase degree of freedom; nesting couples these into a product manifold whose dimension equals the number of bands. The Fisher information geometry on this manifold determines what can be statistically identified from observations.
+We argue that \textbf{nested frequency hierarchies create high-dimensional statistical structure} through a specific mechanism: phase-amplitude coupling between timescales makes slow contextual variables identifiable from fast observables. This is not merely a matter of having multiple oscillators (which trivially yields a product space), but of how cross-scale coupling creates \emph{informative dependencies} that would not exist under independence.
 
-\subsection{Main Results}
+\subsection{Main Contributions}
 
-We establish three theorems:
+We develop an information-geometric framework with an explicit observation model, proving three results:
+
 \begin{enumerate}
-    \item \textbf{Product structure} (Theorem \ref{thm:product}): $K$ nested frequency bands create a phase manifold $\M \cong \T^K / S^1 \cong \T^{K-1}$, a $(K-1)$-dimensional torus after quotienting global phase.
+    \item \textbf{Phase space structure} (Lemma \ref{lem:torus}): $K$ oscillatory bands with unobservable global phase yield a $(K-1)$-dimensional parameter space $\T^{K-1}$ of relative phases.
 
-    \item \textbf{Coupling activates rank} (Theorem \ref{thm:coupling}): Inter-band phase-amplitude coupling increases Fisher rank by activating off-diagonal components. Without coupling, the bands are statistically independent and Fisher rank is additive; with coupling, emergent cross-band coordinates become identifiable.
+    \item \textbf{Coupling activates identifiability} (Theorem \ref{thm:coupling}): Under phase-amplitude coupling, the Fisher information matrix generically has nonzero off-diagonal entries, and parameters that are unidentifiable under independence become identifiable. We demonstrate this explicitly with a theta-gamma example.
 
-    \item \textbf{Clock collapse} (Theorem \ref{thm:clock}): Global clock synchronization constrains all phases to a common reference, collapsing the $\T^{K-1}$ manifold to a point. The accessible family becomes at most 1-dimensional regardless of the number of oscillators.
+    \item \textbf{Clock collapse} (Theorem \ref{thm:clock}): Global clock synchronization reduces the relative phase parameters to deterministic functions of a single time-offset parameter, collapsing identifiable dimension to at most 1.
 \end{enumerate}
 
-These results provide a geometric answer to why biological systems---which universally employ nested frequency architectures---can sustain high-dimensional coherent dynamics, while clocked digital systems---which enforce global synchronization---cannot.
+The key insight is that \emph{nesting}---where slow phases modulate fast dynamics---creates statistical dependencies that make the slow phase observable through the fast signal. This is distinct from merely having multiple independent oscillators.
 
-\subsection{Relation to Prior Work}
+\subsection{Notation}
 
-The information geometry of oscillator systems has been studied extensively \citep{amari2016information,nakahara2002information}. Our contribution is identifying the role of \emph{frequency nesting} (not merely multiple oscillators, but hierarchical phase-amplitude coupling) and \emph{clock constraints} (the collapse induced by global synchronization). This connects information geometry to the emerging theory of dimensional constraints on intelligence \citep{todd2026intelligence}.
+We use the following notation throughout:
+\begin{itemize}
+    \item $\phi_k \in S^1$: phase of the $k$-th oscillatory band
+    \item $\bm{\phi} = (\phi_1, \ldots, \phi_K) \in \T^K$: full phase vector
+    \item $\psi_j = \phi_j - \phi_1$ for $j \geq 2$: relative phases (parameters)
+    \item $\bm{\psi} = (\psi_2, \ldots, \psi_K) \in \T^{K-1}$: relative phase vector
+    \item $y$: observed signal
+    \item $p(y \mid \bm{\psi})$: likelihood of observation given parameters
+    \item $\FIM(\bm{\psi})$: Fisher information matrix at $\bm{\psi}$
+\end{itemize}
 
+%=============================================================================
 \section{Preliminaries}
+%=============================================================================
 
 \subsection{Statistical Manifolds and Fisher Information}
 
-A \emph{statistical manifold} $\M$ is a smooth family of probability distributions $\{p(x|\theta) : \theta \in \Theta\}$ equipped with the Fisher information metric:
+A \emph{statistical manifold} is a smooth family of probability distributions $\{p(y \mid \theta) : \theta \in \Theta\}$ parameterized by $\theta \in \Theta \subseteq \R^n$. The Fisher information matrix at $\theta$ is:
 \begin{equation}
-g_{ij}(\theta) = \mathbb{E}\left[\frac{\partial \log p}{\partial \theta^i} \frac{\partial \log p}{\partial \theta^j}\right]
+\FIM_{ij}(\theta) = \E_{y \sim p(\cdot|\theta)}\left[\frac{\partial \log p(y|\theta)}{\partial \theta^i} \frac{\partial \log p(y|\theta)}{\partial \theta^j}\right]
 \end{equation}
-The \emph{Fisher rank} at $\theta$ is $\mathrm{rank}(g(\theta))$: the number of statistically distinguishable directions. Parameters in the kernel of $g$ cannot be identified from observations.
+where the expectation is over observations $y$ drawn from $p(y|\theta)$.
+
+The \emph{Fisher rank} at $\theta$ is $\mathrm{rank}(\FIM(\theta))$: the number of locally identifiable parameter directions. If $\FIM$ has a zero eigenvalue in direction $v$, then parameters cannot be distinguished along $v$ from observations---the model is \emph{unidentifiable} in that direction.
+
+\begin{remark}
+Throughout this paper, Fisher information is always computed with respect to \emph{parameters} $\theta$ (here, relative phases $\bm{\psi}$) in a likelihood $p(y|\theta)$, not with respect to coordinates of a distribution on phase space. This distinction is essential.
+\end{remark}
 
 \subsection{Phase Variables and the Torus}
 
-A system with $K$ oscillators has phase variables $\phi = (\phi_1, \ldots, \phi_K) \in \T^K$, where $\T^K = (S^1)^K$ is the $K$-torus. The global phase $\Phi = \frac{1}{K}\sum_i \phi_i$ is often unobservable (only relative phases matter). Quotienting by global phase gives the \emph{reduced phase manifold}:
+A system with $K$ oscillators has phase variables $\bm{\phi} = (\phi_1, \ldots, \phi_K) \in \T^K$, where $\T^K = (S^1)^K$ is the $K$-torus. In many settings, only \emph{relative} phases are observable---the global phase $\Phi = \frac{1}{K}\sum_i \phi_i$ cannot be determined from observations invariant under simultaneous phase shifts.
+
+\begin{lemma}[Phase space reduction]
+\label{lem:torus}
+If observations are invariant under the diagonal action $\phi_k \mapsto \phi_k + \alpha$ for all $k$, then the effective parameter space is the quotient:
 \begin{equation}
-\M_{\text{phase}} = \T^K / S^1 \cong \T^{K-1}
+\T^K / S^1 \cong \T^{K-1}
 \end{equation}
 with coordinates $\psi_j = \phi_j - \phi_1$ for $j = 2, \ldots, K$.
-
-\subsection{Nested Frequency Hierarchies}
-
-A \emph{nested frequency hierarchy} consists of $K$ oscillators with frequencies $\omega_1 < \omega_2 < \cdots < \omega_K$ (from slow to fast) and \emph{phase-amplitude coupling}: the phase of slower oscillations modulates the amplitude or instantaneous frequency of faster oscillations.
-
-The canonical example is theta-gamma coupling in hippocampus \citep{lisman2013theta}: gamma bursts occur preferentially at specific phases of the theta cycle. The gamma \emph{phase} carries information; the theta \emph{phase} determines when that information is relevant.
-
-\section{Product Structure from Nested Frequencies}
-\label{sec:product}
-
-\begin{theorem}[Product manifold structure]
-\label{thm:product}
-Let $\mathcal{S}$ be a dynamical system with $K$ nested frequency bands with frequencies $0 < \omega_1 < \omega_2 < \cdots < \omega_K$. Assume each band $k$ has a well-defined phase $\phi_k \in S^1$ evolving as:
-\begin{equation}
-\dot{\phi}_k = \omega_k + \epsilon_k(\phi_1, \ldots, \phi_{k-1}) + \eta_k(t)
-\end{equation}
-where $\epsilon_k$ represents modulation from slower bands and $\eta_k$ is noise. Then:
-\begin{enumerate}
-    \item[(i)] The phase space is the $K$-torus $\T^K$ with coordinates $(\phi_1, \ldots, \phi_K)$.
-    \item[(ii)] After quotienting global phase, the reduced phase manifold is $\T^{K-1}$.
-    \item[(iii)] The stationary distribution $p(\phi_1, \ldots, \phi_K)$ lives on a $(K-1)$-dimensional family parameterized by the relative phases.
-\end{enumerate}
-\end{theorem}
+\end{lemma}
 
 \begin{proof}
-(i) Each $\phi_k \in S^1$ by definition; the product is $\T^K$.
-
-(ii) The diagonal $S^1$ action $(\phi_1, \ldots, \phi_K) \mapsto (\phi_1 + \alpha, \ldots, \phi_K + \alpha)$ corresponds to global phase shift. The quotient $\T^K / S^1$ is diffeomorphic to $\T^{K-1}$ via the projection $(\phi_1, \ldots, \phi_K) \mapsto (\phi_2 - \phi_1, \ldots, \phi_K - \phi_1)$.
-
-(iii) The dynamics are autonomous in the relative phases $\psi_j = \phi_j - \phi_1$:
-\begin{equation}
-\dot{\psi}_j = (\omega_j - \omega_1) + \epsilon_j(\phi_1, \ldots, \phi_{j-1}) - \epsilon_1 + (\eta_j - \eta_1)
-\end{equation}
-The stationary distribution $p(\psi_2, \ldots, \psi_K)$ on $\T^{K-1}$ is $(K-1)$-dimensional.
+The diagonal $S^1$ action on $\T^K$ has orbits $\{(\phi_1 + \alpha, \ldots, \phi_K + \alpha) : \alpha \in S^1\}$. Invariant functions depend only on phase differences. The map $(\phi_1, \ldots, \phi_K) \mapsto (\phi_2 - \phi_1, \ldots, \phi_K - \phi_1)$ provides coordinates on the quotient, which is diffeomorphic to $\T^{K-1}$.
 \end{proof}
 
-\textbf{Interpretation.} Each frequency band contributes one dimension to the phase manifold. Biological systems with $K$ nested bands operate on a $(K-1)$-dimensional torus (after quotienting global phase). The dimension grows linearly with the number of nested scales.
+This lemma is a standard fact about product tori; the key question is what statistical structure exists on $\T^{K-1}$ under different observation models.
 
-\begin{example}[Neural oscillations]
-Consider four nested bands: delta (0.5--4 Hz), theta (4--8 Hz), gamma (30--80 Hz), and high gamma (80--150 Hz). This creates a 3-dimensional phase manifold. The neural state can be specified by three relative phases, each carrying independent information.
+\subsection{Observation Model: Phase-Amplitude Coupling}
+
+We now specify the generative model that makes ``nested frequency hierarchy'' statistically meaningful.
+
+\begin{definition}[Nested frequency observation model]
+\label{def:observation}
+A \emph{nested frequency observation model} consists of:
+\begin{enumerate}
+    \item Latent phases $\bm{\phi} = (\phi_1, \ldots, \phi_K)$ with frequencies $\omega_1 < \omega_2 < \cdots < \omega_K$ (slow to fast).
+    \item A signal $y(t)$ of the form:
+    \begin{equation}
+    y(t) = A(\phi_1, \ldots, \phi_{K-1}) \cdot g(\phi_K) + \epsilon(t)
+    \label{eq:signal}
+    \end{equation}
+    where $A(\cdot)$ is the amplitude modulation by slower phases, $g(\cdot)$ is the fast carrier (e.g., $\cos(\phi_K)$), and $\epsilon(t)$ is observation noise.
+    \item Parameters $\bm{\psi} = (\psi_2, \ldots, \psi_K)$ are relative phases.
+\end{enumerate}
+\end{definition}
+
+The critical feature is that \textbf{slow phases modulate the amplitude of fast oscillations}. This is the defining characteristic of nested frequency hierarchies, distinguishing them from independent oscillators.
+
+\begin{example}[Theta-gamma coupling]
+In hippocampal recordings, gamma oscillations ($\sim$40 Hz) have amplitude modulated by theta phase ($\sim$8 Hz) \citep{lisman2013theta}. The signal model is:
+\begin{equation}
+y(t) = [1 + \alpha \cos(\phi_\theta)] \cos(\phi_\gamma) + \epsilon(t)
+\label{eq:theta_gamma}
+\end{equation}
+where $\alpha \in [0,1]$ is the modulation depth. When $\alpha = 0$, the phases are statistically independent in the observation; when $\alpha > 0$, theta phase affects the observable signal.
 \end{example}
 
-\section{Coupling Activates Fisher Rank}
-\label{sec:coupling}
+%=============================================================================
+\section{Fisher Information Under Independence}
+\label{sec:independence}
+%=============================================================================
 
-The product structure establishes the \emph{ambient dimension}. But dimension alone does not determine identifiability. What matters is the Fisher rank: how many directions are statistically distinguishable.
+We first establish a baseline: what is the Fisher information structure when oscillatory bands are statistically independent in the observation model?
 
-\subsection{Independent Bands: Additive Rank}
-
-\begin{proposition}[Additive rank under independence]
-\label{prop:additive}
-If the $K$ frequency bands are statistically independent (no phase-amplitude coupling), the Fisher information matrix on $\T^{K-1}$ is block-diagonal:
+\begin{proposition}[Block-diagonal Fisher under independence]
+\label{prop:diagonal}
+Suppose the likelihood factorizes as $p(y|\bm{\psi}) = \prod_{j=2}^{K} p_j(y_j|\psi_j)$ where $y_j$ are independent observations of each relative phase. Then the Fisher information matrix is block-diagonal:
 \begin{equation}
-g = \mathrm{diag}(g_1, g_2, \ldots, g_{K-1})
+\FIM(\bm{\psi}) = \mathrm{diag}(\FIM_2(\psi_2), \ldots, \FIM_K(\psi_K))
 \end{equation}
-where $g_j$ is the Fisher information for the $j$-th relative phase. The total rank is:
-\begin{equation}
-\mathrm{rank}(g) = \sum_{j=1}^{K-1} \mathrm{rank}(g_j) = K-1
-\end{equation}
-(assuming each $g_j > 0$).
+where $\FIM_j(\psi_j) = \E[(\partial_{\psi_j} \log p_j)^2]$.
 \end{proposition}
 
 \begin{proof}
-Independence implies $p(\psi_2, \ldots, \psi_K) = \prod_j p_j(\psi_j)$. The score function factorizes: $\partial_{\psi_j} \log p = \partial_{\psi_j} \log p_j$. Cross-terms vanish:
+Under independence, $\log p(y|\bm{\psi}) = \sum_j \log p_j(y_j|\psi_j)$. The score for $\psi_j$ is $\partial_{\psi_j} \log p = \partial_{\psi_j} \log p_j$, which depends only on $y_j$. For $j \neq k$:
 \begin{equation}
-g_{jk} = \mathbb{E}[\partial_{\psi_j} \log p \cdot \partial_{\psi_k} \log p] = \mathbb{E}[\partial_{\psi_j} \log p_j] \cdot \mathbb{E}[\partial_{\psi_k} \log p_k] = 0
+\FIM_{jk} = \E[\partial_{\psi_j} \log p \cdot \partial_{\psi_k} \log p] = \E[\partial_{\psi_j} \log p_j] \cdot \E[\partial_{\psi_k} \log p_k] = 0
 \end{equation}
-for $j \neq k$ (since $\mathbb{E}[\partial_\psi \log p] = 0$ for any density).
+since $\E[\partial_\psi \log p] = 0$ for any likelihood.
 \end{proof}
 
-\subsection{Coupled Bands: Emergent Rank}
+\begin{remark}[Unidentifiable phases under partial observation]
+Under the independent model, if we only observe the fast band (e.g., gamma), then slow phases (e.g., theta) do not appear in the likelihood at all. The corresponding rows and columns of $\FIM$ are zero---these parameters are \emph{completely unidentifiable}.
+\end{remark}
 
-Phase-amplitude coupling between bands breaks independence and activates off-diagonal Fisher information.
+This sets up the key question: how does phase-amplitude coupling change this picture?
 
-\begin{theorem}[Coupling activates rank]
+%=============================================================================
+\section{Coupling Activates Identifiability}
+\label{sec:coupling}
+%=============================================================================
+
+We now prove that phase-amplitude coupling generically produces off-diagonal Fisher information and, crucially, can make previously unidentifiable parameters identifiable.
+
+\subsection{General Result}
+
+\begin{theorem}[Coupling activates identifiability]
 \label{thm:coupling}
-Let $p_0(\psi)$ be the product distribution on $\T^{K-1}$ with Fisher matrix $g_0 = \mathrm{diag}(g_1, \ldots, g_{K-1})$. Let $p_\kappa(\psi) \propto p_0(\psi) \exp(\kappa \cdot C(\psi))$ be a coupling perturbation, where $C: \T^{K-1} \to \R$ depends on multiple relative phases (e.g., $C(\psi) = \cos(\psi_j - \psi_k)$ for phase-phase coupling).
+Consider the observation model \eqref{eq:signal} with Gaussian noise $\epsilon \sim \mathcal{N}(0, \sigma^2)$. Let $A(\phi_1, \ldots, \phi_{K-1}) = A_0 + \sum_{j=1}^{K-1} \alpha_j f_j(\phi_j)$ where $f_j$ are non-constant functions and $\alpha_j$ are modulation depths.
 
-Then for $\kappa > 0$:
 \begin{enumerate}
-    \item[(i)] The Fisher matrix $g_\kappa$ has nonzero off-diagonal entries:
-    \begin{equation}
-    (g_\kappa)_{jk} = \kappa^2 \cdot \mathrm{Cov}_{p_\kappa}[\partial_{\psi_j} C, \partial_{\psi_k} C] + O(\kappa^3)
-    \end{equation}
-    \item[(ii)] If $C$ depends nontrivially on at least two phases, then $\mathrm{rank}(g_\kappa) \geq \mathrm{rank}(g_0)$, with strict inequality possible when $C$ activates previously null directions.
+    \item[(i)] If all $\alpha_j = 0$ (no modulation), then slow phases $\phi_1, \ldots, \phi_{K-1}$ are unidentifiable from observations of $y$: the Fisher information for these parameters is zero.
+
+    \item[(ii)] If $\alpha_j \neq 0$ for some $j$, then $\phi_j$ becomes identifiable: $\FIM_{jj} > 0$. Moreover, if multiple $\alpha_j \neq 0$, the Fisher matrix generically has nonzero off-diagonal entries.
 \end{enumerate}
 \end{theorem}
 
 \begin{proof}
-(i) Write $\log p_\kappa = \log p_0 + \kappa C - \log Z_\kappa$. The score is:
+For Gaussian noise, the log-likelihood is:
 \begin{equation}
-s_j = \partial_{\psi_j} \log p_\kappa = \partial_{\psi_j} \log p_0 + \kappa \partial_{\psi_j} C - \partial_{\psi_j} \log Z_\kappa
+\log p(y|\bm{\phi}) = -\frac{1}{2\sigma^2}[y - A(\phi_1,\ldots,\phi_{K-1})g(\phi_K)]^2 + \text{const}
 \end{equation}
-Since $\partial_{\psi_j} \log Z_\kappa = \mathbb{E}_{p_\kappa}[\partial_{\psi_j} C] \cdot \kappa$, the centered score is:
-\begin{equation}
-s_j - \mathbb{E}[s_j] = \partial_{\psi_j} \log p_0 + \kappa(\partial_{\psi_j} C - \mathbb{E}[\partial_{\psi_j} C])
-\end{equation}
-The Fisher information is:
-\begin{align}
-(g_\kappa)_{jk} &= \mathbb{E}[(s_j - \mathbb{E}[s_j])(s_k - \mathbb{E}[s_k])] \\
-&= (g_0)_{jk} + \kappa^2 \mathrm{Cov}[\partial_{\psi_j} C, \partial_{\psi_k} C] + O(\kappa^3)
-\end{align}
-For $j \neq k$, $(g_0)_{jk} = 0$ but the covariance term can be nonzero.
 
-(ii) The rank is lower-semicontinuous in $\kappa$. Coupling can only increase rank (or maintain it), not decrease it. If $C$ activates a direction orthogonal to the support of $g_0$, rank strictly increases.
+The score for $\phi_j$ (with $j < K$) is:
+\begin{equation}
+\frac{\partial \log p}{\partial \phi_j} = \frac{1}{\sigma^2}[y - Ag(\phi_K)] \cdot \frac{\partial A}{\partial \phi_j} \cdot g(\phi_K)
+\end{equation}
+
+(i) If $\alpha_j = 0$, then $\partial A / \partial \phi_j = 0$, so the score is identically zero and $\FIM_{jj} = 0$.
+
+(ii) If $\alpha_j \neq 0$, then $\partial A / \partial \phi_j = \alpha_j f_j'(\phi_j) \neq 0$ generically. The Fisher information is:
+\begin{align}
+\FIM_{jj} &= \E\left[\left(\frac{\partial \log p}{\partial \phi_j}\right)^2\right] \\
+&= \frac{1}{\sigma^4} \E[(y - Ag)^2] \cdot \left(\frac{\partial A}{\partial \phi_j}\right)^2 g(\phi_K)^2 \\
+&= \frac{1}{\sigma^2} \left(\alpha_j f_j'(\phi_j)\right)^2 g(\phi_K)^2 > 0
+\end{align}
+
+For the off-diagonal terms with $j \neq k$ (both $< K$):
+\begin{equation}
+\FIM_{jk} = \frac{1}{\sigma^2} \frac{\partial A}{\partial \phi_j} \frac{\partial A}{\partial \phi_k} g(\phi_K)^2
+\end{equation}
+which is generically nonzero when both $\alpha_j, \alpha_k \neq 0$.
 \end{proof}
 
-\textbf{Biological interpretation.} In neural systems, theta-gamma coupling means gamma phase carries information about theta phase. This creates statistical dependence: observing gamma tells you something about theta. The off-diagonal Fisher information quantifies this: $g_{\theta,\gamma} > 0$ means joint estimation outperforms independent estimation.
+\textbf{Interpretation.} The theorem formalizes a simple but important point: \emph{phase-amplitude coupling makes slow phases visible in fast observations}. Without coupling, observing gamma tells you nothing about theta. With coupling, theta phase modulates gamma amplitude, so theta becomes estimable from gamma recordings.
 
-\begin{remark}[Connection to emergence]
-An ``emergent coordinate'' in the sense of \citet{todd2026intelligence} is one whose Fisher information is zero for subsystems in isolation but nonzero for the coupled system. Theorem \ref{thm:coupling} formalizes this: phase-amplitude coupling creates identifiable cross-band coordinates that do not exist under independence.
-\end{remark}
+\subsection{Worked Example: Theta-Gamma System}
 
+We now compute the Fisher information matrix explicitly for the canonical two-band case.
+
+\begin{example}[Fisher information for theta-gamma coupling]
+\label{ex:theta_gamma}
+Consider the model \eqref{eq:theta_gamma}:
+\begin{equation}
+y = [1 + \alpha \cos(\psi)] \cos(\phi_\gamma) + \epsilon, \quad \epsilon \sim \mathcal{N}(0, \sigma^2)
+\end{equation}
+where $\psi = \phi_\theta - \phi_\gamma$ is the relative phase (the parameter of interest, since global phase is unobservable) and we condition on $\phi_\gamma$ being known from the fast carrier.
+
+The log-likelihood is:
+\begin{equation}
+\log p(y|\psi) = -\frac{1}{2\sigma^2}[y - (1+\alpha\cos\psi)\cos\phi_\gamma]^2 + \text{const}
+\end{equation}
+
+The score is:
+\begin{equation}
+\frac{\partial \log p}{\partial \psi} = \frac{\alpha \sin\psi \cos\phi_\gamma}{\sigma^2}[y - (1+\alpha\cos\psi)\cos\phi_\gamma]
+\end{equation}
+
+The Fisher information is:
+\begin{align}
+\FIM(\psi) &= \E\left[\left(\frac{\partial \log p}{\partial \psi}\right)^2\right] \\
+&= \frac{\alpha^2 \sin^2\psi \cos^2\phi_\gamma}{\sigma^4} \cdot \E[(y - (1+\alpha\cos\psi)\cos\phi_\gamma)^2] \\
+&= \frac{\alpha^2 \sin^2\psi \cos^2\phi_\gamma}{\sigma^2}
+\label{eq:fim_example}
+\end{align}
+
+\textbf{Key observations:}
+\begin{enumerate}
+    \item When $\alpha = 0$ (no coupling): $\FIM(\psi) = 0$. Theta phase is \emph{completely unidentifiable} from gamma observations.
+
+    \item When $\alpha > 0$ (coupling present): $\FIM(\psi) > 0$ for generic $\psi$ (except at $\psi = 0, \pi$ where modulation effect vanishes). Theta phase \emph{becomes identifiable}.
+
+    \item Fisher information scales as $\alpha^2$: stronger coupling yields more precise estimation.
+
+    \item Fisher information depends on $\phi_\gamma$: observations at $\phi_\gamma = \pi/2$ (zero-crossings of carrier) are uninformative.
+\end{enumerate}
+\end{example}
+
+This example illustrates the core mechanism: nested frequency structure, through phase-amplitude coupling, creates statistical dependencies that ``lift'' hidden slow variables into the observable fast signal.
+
+\subsection{What Coupling Does \emph{Not} Do}
+
+To prevent misunderstanding, we clarify what Theorem \ref{thm:coupling} does \emph{not} claim:
+
+\begin{enumerate}
+    \item \textbf{Coupling does not increase dimension beyond the parameter space.} If you have $K-1$ relative phases, the Fisher matrix is at most $(K-1) \times (K-1)$ with rank at most $K-1$. Coupling cannot create dimensions that don't exist.
+
+    \item \textbf{Strong coupling can reduce effective dimension.} Phase-locking (complete synchronization) imposes constraints that \emph{reduce} the number of free parameters. Our ``activation'' result concerns the regime where coupling creates informative dependencies, not hard constraints.
+
+    \item \textbf{Identifiability requires appropriate observations.} If your measurement is insensitive to amplitude modulation, coupling won't help. The result is model-dependent.
+\end{enumerate}
+
+%=============================================================================
 \section{Clock Synchronization Collapses Dimension}
 \label{sec:clock}
+%=============================================================================
 
 We now characterize what happens when all oscillators are locked to a global clock.
 
 \begin{definition}[Clock synchronization]
-A system of $K$ oscillators is \emph{clock-synchronized} if all phases are constrained to a common reference:
+A system of $K$ oscillators is \emph{clock-synchronized} if all phases are deterministic functions of a global time reference:
 \begin{equation}
 \phi_k(t) = \omega_k t + \phi_0 \quad \text{for all } k
 \end{equation}
-where $\phi_0$ is the global clock phase and $\omega_k$ are integer multiples of a base frequency $\omega_0$.
+where $\phi_0$ is the initial clock phase and $\omega_k = n_k \omega_0$ are integer multiples of a base frequency $\omega_0$.
 \end{definition}
 
-Under clock synchronization, the relative phases are \emph{fixed}:
+Under clock synchronization, the relative phases become:
 \begin{equation}
-\psi_j = \phi_j - \phi_1 = (\omega_j - \omega_1) t
+\psi_j(t) = \phi_j(t) - \phi_1(t) = (n_j - n_1)\omega_0 t
 \end{equation}
-They evolve deterministically and carry no information about system parameters.
+These are deterministic functions of time, not free parameters.
 
 \begin{theorem}[Clock collapse]
 \label{thm:clock}
 Under clock synchronization:
 \begin{enumerate}
-    \item[(i)] The accessible phase manifold collapses from $\T^{K-1}$ to a 1-dimensional orbit (the clock trajectory).
-    \item[(ii)] The Fisher rank of the observable distribution is at most 1, regardless of $K$.
-    \item[(iii)] All inter-band phase relationships are deterministic functions of time, contributing no statistical degrees of freedom.
+    \item[(i)] The relative phases $\psi_j(t)$ are deterministic functions of the single parameter $t$ (or equivalently, $\phi_0$).
+
+    \item[(ii)] The effective parameter dimension is at most 1: only the time offset $\phi_0$ (equivalently, the clock phase) is a free parameter.
+
+    \item[(iii)] The trajectory $\bm{\psi}(t)$ traces a 1-dimensional curve in $\T^{K-1}$. At any fixed time, the system occupies a single point, not a distribution over phases.
 \end{enumerate}
 \end{theorem}
 
 \begin{proof}
-(i) Under clock synchronization, $\psi_j(t) = (\omega_j - \omega_1)t \mod 2\pi$. The trajectory traces a 1-dimensional path in $\T^{K-1}$ (a dense winding if frequencies are incommensurate, a closed orbit otherwise). At any fixed $t$, the system occupies a single point, not a distribution.
+(i) By definition, $\psi_j(t) = (n_j - n_1)\omega_0 t$ is determined by $t$.
 
-(ii) If noise is added, the distribution at time $t$ is a delta function smeared by noise: $p(\psi) \approx \delta(\psi - \psi(t)) * \mathcal{N}(0, \sigma^2)$. The only free parameter is the global phase $\phi_0$ (or equivalently, time offset). Fisher rank $\leq 1$.
+(ii) Any observation $y(t)$ depends on $\bm{\phi}(t)$, which depends only on $t$ and $\phi_0$. The likelihood $p(y|\phi_0)$ is parameterized by a single parameter, so Fisher rank $\leq 1$.
 
-(iii) Relative phases $\psi_j$ are deterministic functions of the clock. They cannot carry information about system parameters beyond what is encoded in the frequency ratios $\omega_j / \omega_1$, which are fixed by the clock design.
+(iii) The map $t \mapsto \bm{\psi}(t)$ is a curve in $\T^{K-1}$. If frequencies are commensurate (all $n_j$ integers), this is a closed orbit; if incommensurate, it winds densely. Either way, it is 1-dimensional.
 \end{proof}
 
-\textbf{Interpretation.} A global clock destroys the product structure. Instead of $K-1$ independent phase dimensions, you have one clock phase that determines everything. The system cannot maintain high-dimensional coherent dynamics because all degrees of freedom are slaved to the clock.
+\textbf{Interpretation.} A global clock destroys the product structure of independent phases. Instead of $K-1$ free relative phases, you have one clock phase that determines everything. The system cannot maintain high-dimensional phase relationships because all timing is slaved to the clock.
 
-\textbf{Digital computers.} Clocked digital systems operate exactly in this regime. All state transitions are synchronized to a global clock. The relative timing between operations is fixed to integer clock cycles. This is why, regardless of the number of transistors, a clocked digital computer cannot access the $(K-1)$-dimensional phase manifold that an asynchronous system with $K$ frequency bands can.
+\subsection{Application to Digital Systems}
 
-\section{Fisher Rank Comparison}
-\label{sec:comparison}
+Digital computers with a global clock operate in this regime: all state transitions are synchronized to clock edges, and relative timing between operations is fixed to integer clock cycles.
 
-We summarize the dimensional comparison:
+\begin{remark}[Nuances for digital systems]
+\label{rem:digital}
+The clock-collapse result applies to \emph{ideal globally-clocked systems}. Real digital systems have complications:
+\begin{enumerate}
+    \item \textbf{Multiple clock domains}: Modern processors have multiple asynchronous clock domains, partially recovering independent phase relationships.
+    \item \textbf{Clock jitter}: Thermal and quantum noise create phase uncertainty, though typically small.
+    \item \textbf{Asynchronous circuits}: Clockless designs exist and do not suffer clock collapse.
+\end{enumerate}
+The contrast we emphasize is between \emph{systems designed around a global timing reference} versus \emph{systems with intrinsically asynchronous, hierarchically coupled timing}. The former collapse relative phase degrees of freedom; the latter preserve them.
+\end{remark}
+
+\begin{remark}[Dimension in digital systems]
+Digital systems have enormous \emph{discrete} state spaces (exponential in bit count). Theorem \ref{thm:clock} concerns \emph{continuous relative phase} degrees of freedom, not discrete state dimension. A clocked digital computer gains combinatorial complexity in bits but loses the kind of continuous multiscale phase manifold that characterizes biological oscillatory systems.
+\end{remark}
+
+%=============================================================================
+\section{Summary of Statistical Structure}
+\label{sec:summary}
+%=============================================================================
+
+We summarize the Fisher information structure under different architectures:
 
 \begin{table}[h]
 \centering
-\begin{tabular}{@{}lcc@{}}
+\begin{tabular}{@{}lccc@{}}
 \toprule
-\textbf{Architecture} & \textbf{Phase manifold} & \textbf{Fisher rank} \\
+\textbf{Architecture} & \textbf{Parameter space} & \textbf{Fisher structure} & \textbf{Identifiable dim.} \\
 \midrule
-$K$ independent bands & $\T^{K-1}$ & $K-1$ \\
-$K$ coupled bands & $\T^{K-1}$ & $\geq K-1$ (coupling adds) \\
-Clock-synchronized & $S^1$ (clock orbit) & $\leq 1$ \\
+$K$ independent bands & $\T^{K-1}$ & Diagonal (or zero) & $\leq K-1$ \\
+$K$ nested bands (coupled) & $\T^{K-1}$ & Dense, off-diagonal & $\leq K-1$\textsuperscript{*} \\
+Clock-synchronized & 1D (time offset) & Scalar & $\leq 1$ \\
 \bottomrule
 \end{tabular}
-\caption{Dimensional comparison of oscillatory architectures.}
+\caption{Fisher information structure under different oscillatory architectures. \textsuperscript{*}Coupling activates identifiability of phases that are unidentifiable under independence; see Example \ref{ex:theta_gamma}.}
 \label{tab:comparison}
 \end{table}
 
-\begin{corollary}[Dimensional gap]
+\begin{corollary}[Identifiability gap]
 \label{cor:gap}
-A biological system with $K$ nested, coupled frequency bands has Fisher rank at least $K-1$. A clocked system with arbitrarily many oscillators has Fisher rank at most 1. The gap is at least $K-2$ dimensions.
+Under the nested frequency observation model (Definition \ref{def:observation}):
+\begin{enumerate}
+    \item With $K$ coupled bands and generic modulation depths, all $K-1$ relative phases are identifiable from fast-band observations.
+    \item Under global clock synchronization, at most 1 parameter (time offset) is identifiable.
+\end{enumerate}
+The identifiability gap between nested biological systems and clock-synchronized systems is $K-2$ dimensions.
 \end{corollary}
 
-For neural systems with 4--6 canonical frequency bands (delta, theta, alpha, beta, gamma, high-gamma), this implies a Fisher rank of at least 3--5 from frequency nesting alone, compared to rank $\leq 1$ for a clocked system.
+For neural systems with 4--6 canonical frequency bands (delta, theta, alpha, beta, gamma, high-gamma), this represents 3--5 identifiable relative phases under coupling, versus at most 1 under global clock synchronization.
 
+%=============================================================================
 \section{Discussion}
+%=============================================================================
+
+\subsection{What Nesting Contributes Beyond Multiple Oscillators}
+
+A reviewer might ask: ``Any $K$ oscillators give a $K$-torus; what is special about nesting?''
+
+The answer is in the observation model. \emph{Nesting} refers to the hierarchical structure where slow phases modulate fast dynamics:
+\begin{enumerate}
+    \item \textbf{Slow phases are not directly observed}---in typical recordings, you measure fast activity (spikes, gamma, etc.), not the slow envelope directly.
+
+    \item \textbf{Phase-amplitude coupling makes slow phases observable through fast signals}---this is the ``activation'' of Theorem \ref{thm:coupling}.
+
+    \item \textbf{The hierarchy provides natural multiscale coordinates}---slow phases set context, fast phases carry content, and the nesting structure determines which variables can be inferred from which observations.
+\end{enumerate}
+
+Without the nesting structure (phase-amplitude coupling), independent oscillators would give a product space with diagonal (or zero) Fisher information---you could estimate phases you directly observe, but not others. Nesting creates the statistical dependencies that make the full phase structure accessible.
 
 \subsection{Why Biology Uses Nested Frequencies}
 
-The ubiquity of nested frequency hierarchies in biological systems---from neural oscillations to circadian-ultradian coupling to ecological rhythms---is often attributed to functional requirements: temporal segregation, multiplexing, context-dependent processing \citep{buzsaki2006rhythms,lisman2013theta}.
+The ubiquity of nested frequency hierarchies in biological systems \citep{buzsaki2006rhythms,lisman2013theta} is often attributed to functional requirements: temporal segregation, multiplexing, context-dependent processing.
 
-Our analysis suggests a deeper geometric reason: \textbf{nested frequencies are how biological systems create high-dimensional phase manifolds}. The dimension of coherent dynamics scales with the number of nested frequency bands. This provides the substrate for high-dimensional coherence, which recent work identifies as the computational basis of biological intelligence \citep{todd2026intelligence}.
+Our analysis suggests a complementary geometric explanation: \textbf{nested frequencies are how biological systems create identifiable multiscale structure}. The slow contextual variables (mood, task state, circadian phase) become estimable from fast observables (neural spikes, gene expression bursts) precisely because of cross-scale coupling.
 
-\subsection{Why Clocked Systems Are Dimensionally Impoverished}
+This may explain why biological systems consistently employ nested architectures rather than independent oscillators: the nesting structure maximizes what can be inferred about system state from available observations.
 
-Digital computers use global clocks for a good reason: synchronization simplifies circuit design and ensures deterministic operation. But this comes at a geometric cost. Clock synchronization collapses the $\T^{K-1}$ product manifold to a 1-dimensional constraint. No amount of parallelism recovers this: adding more clocked processors adds more copies of the same 1-dimensional structure, not higher-dimensional phase relationships.
+\subsection{Implications for Artificial Systems}
 
-This may explain persistent capability gaps between biological and artificial intelligence, despite the computational power of modern hardware. The limitation is not algorithmic but geometric: clocked substrates cannot access the high-dimensional phase manifolds that nested frequency architectures create.
-
-\subsection{Implications for Substrate-Independent Intelligence}
-
-If high-dimensional coherent dynamics require nested frequency architectures, then substrate-independent intelligence may require substrates capable of supporting such architectures. This does not necessarily require biological tissue, but it does require:
+If high-dimensional identifiable structure requires nested frequency architectures with phase-amplitude coupling, then achieving similar capabilities in artificial systems may require:
 \begin{enumerate}
-    \item Multiple oscillatory timescales
+    \item Multiple oscillatory timescales (not a single global clock)
     \item Asynchronous phase relationships between scales
-    \item Phase-amplitude coupling between frequency bands
+    \item Coupling mechanisms that make slow state visible in fast dynamics
 \end{enumerate}
-Neuromorphic computing architectures that incorporate these features \citep{indiveri2011neuromorphic} may approach biological Fisher rank in ways that clocked digital systems cannot.
+
+Neuromorphic computing architectures that incorporate these features \citep{indiveri2011neuromorphic,schuman2017survey} may achieve richer statistical structure than globally clocked systems. The key is not merely parallelism or speed, but the geometric structure of timing relationships.
 
 \subsection{Limitations}
 
-This analysis treats idealized oscillator models. Real biological oscillations have amplitude dynamics, non-sinusoidal waveforms, and complex coupling functions. The core result---that frequency nesting creates product manifolds and clock synchronization collapses them---should be robust, but quantitative predictions require system-specific modeling.
+This analysis makes several idealizations:
+\begin{enumerate}
+    \item \textbf{Idealized oscillator models}: Real biological oscillations have amplitude dynamics, non-sinusoidal waveforms, and complex coupling functions.
 
-We have also focused on phase variables. Amplitude dynamics add additional degrees of freedom not captured by the torus geometry. A fuller treatment would include amplitude-phase manifolds, but the phase-only analysis captures the essential dimensional argument.
+    \item \textbf{Gaussian noise}: The explicit calculations assume Gaussian observation noise; non-Gaussian cases may differ quantitatively.
 
+    \item \textbf{Known carrier phase}: The theta-gamma example conditions on known $\phi_\gamma$; in practice, both phases must be estimated jointly.
+
+    \item \textbf{Single-sample Fisher information}: We compute Fisher information for single observations; temporal sequences provide additional structure.
+\end{enumerate}
+
+Despite these limitations, the core insight---that cross-scale coupling activates identifiability of slow variables from fast observations---should be robust across more realistic models.
+
+%=============================================================================
 \section{Conclusion}
+%=============================================================================
 
-Nested frequency hierarchies are not merely a convenient encoding scheme for biological systems. They are the geometric foundation of high-dimensional coherence. Each frequency band contributes a phase dimension; coupling between bands activates cross-dimensional Fisher information; and the resulting manifold supports the high-rank statistical structure that underlies adaptive behavior.
+Nested frequency hierarchies are not merely a convenient encoding scheme. They are a mechanism for creating \emph{identifiable} high-dimensional statistical structure. Each frequency band contributes a potential phase parameter; cross-scale coupling (phase-amplitude modulation) makes these parameters jointly estimable from partial observations; and the resulting Fisher information structure has dimension scaling with the number of nested bands.
 
-Clock synchronization destroys this architecture. By constraining all phases to a single reference, clocks collapse the product manifold to one dimension. This is not a matter of implementation but of geometry: no amount of clocked parallelism recovers the dimensional structure that asynchronous frequency nesting creates.
+Global clock synchronization destroys this structure. By making all relative phases deterministic functions of a single clock, synchronization collapses the identifiable parameter family to one dimension. This is a geometric fact, not an implementation detail.
 
-The Fisher rank gap between nested biological systems ($\geq K-1$) and clocked digital systems ($\leq 1$) provides a geometric explanation for persistent differences in the character of biological and artificial intelligence. Whether this gap can be bridged by alternative computing architectures remains an open question with significant implications for the future of intelligent systems.
+The identifiability gap between nested biological systems and clock-synchronized artificial systems provides one explanation for persistent differences in their capabilities. Whether this gap can be bridged by alternative computing architectures---those that preserve multiscale asynchronous phase structure---remains an important open question.
 
+%=============================================================================
 \section*{Acknowledgements}
+%=============================================================================
 
-The author thanks the reviewers for helpful comments.
+The author thanks anonymous reviewers for detailed feedback that substantially improved the manuscript.
 
 \section*{Declarations}
 
@@ -317,6 +460,7 @@ The author thanks the reviewers for helpful comments.
 
 \textbf{AI assistance.} Claude Code with Opus 4.5 (Anthropic) was used for drafting. The author reviewed all content and takes full responsibility.
 
+%=============================================================================
 \bibliographystyle{plainnat}
 \begin{thebibliography}{99}
 
@@ -325,6 +469,9 @@ Amari, S.-I. (2016). \emph{Information Geometry and Its Applications}. Springer.
 
 \bibitem[Buzs\'aki(2006)]{buzsaki2006rhythms}
 Buzs\'aki, G. (2006). \emph{Rhythms of the Brain}. Oxford University Press.
+
+\bibitem[Canolty and Knight(2010)]{canolty2010functional}
+Canolty, R.~T., Knight, R.~T. (2010). The functional role of cross-frequency coupling. \emph{Trends in Cognitive Sciences}, 14(11), 506--515.
 
 \bibitem[Helm et al.(2017)]{helm2017annual}
 Helm, B., et al. (2017). Annual rhythms that underlie phenology: biological time-keeping meets environmental change. \emph{Proceedings of the Royal Society B}, 284, 20170046.
@@ -338,8 +485,8 @@ Lisman, J.~E., Jensen, O. (2013). The theta-gamma neural code. \emph{Neuron}, 77
 \bibitem[Lloyd and Rossi(2006)]{lloyd2006ultradian}
 Lloyd, D., Rossi, E.~L. (2006). \emph{Ultradian Rhythms from Molecules to Mind}. Springer.
 
-\bibitem[Nakahara and Amari(2002)]{nakahara2002information}
-Nakahara, H., Amari, S.-I. (2002). Information-geometric measure for neural spikes. \emph{Neural Computation}, 14, 2269--2316.
+\bibitem[Schuman et al.(2017)]{schuman2017survey}
+Schuman, C.~D., et al. (2017). A survey of neuromorphic computing and neural networks in hardware. \emph{arXiv:1705.06963}.
 
 \bibitem[Todd(2026)]{todd2026intelligence}
 Todd, I. (2026). Intelligence as high-dimensional coherence: The observable dimensionality bound and computational tractability. \emph{BioSystems}, 258, 105704.
