@@ -27,8 +27,8 @@
 \newcommand{\T}{\mathbb{T}}
 \newcommand{\FIM}{\mathcal{I}}
 
-\title{Information Geometry of Nested Frequency Hierarchies: \\
-Why Biological Systems Exhibit High-Dimensional Coherence}
+\title{Information Geometry of Biological Memory: \\
+How Slow Oscillations Carry High-Dimensional Programs}
 
 \author{Ian Todd\\
 Sydney Medical School, University of Sydney\\
@@ -41,20 +41,39 @@ Sydney Medical School, University of Sydney\\
 \maketitle
 
 \begin{abstract}
-Biological systems from neural circuits to cellular networks exhibit nested frequency hierarchies: oscillations at multiple timescales with systematic phase-amplitude coupling between scales. We provide an information-geometric framework showing how this architecture creates high-dimensional statistical structure. Under a generative model where slow oscillatory phases modulate fast dynamics, we prove that: (1) $K$ frequency bands induce a $(K-1)$-dimensional parameter space of relative phases after quotienting global phase; (2) phase-amplitude coupling generically produces off-diagonal Fisher information, enabling identification of slow phase from fast-band observations that would otherwise be unidentifiable; and (3) global clock synchronization collapses the accessible parameter family to at most one dimension. A worked example with theta-gamma coupling demonstrates how coupling activates identifiability: without modulation, slow phase drops out of the likelihood; with modulation, it becomes estimable. These results clarify the geometric basis for why biological substrates---which universally employ nested frequency architectures---support richer statistical structure than globally clocked systems.
+We present an information-geometric framework analyzing \textbf{phase-amplitude coupling} in nested oscillatory systems. The core contribution is an explicit observation model and Fisher-rank analysis: when slow phases modulate fast-band amplitude, they enter the fast-band likelihood (nonzero score). We prove that identifying $K-1$ relative phases from $K$ coupled bands requires at least $K-1$ informative observations---coupling is necessary but not sufficient for identifiability. Global clock synchronization, by contrast, constrains the system to a one-dimensional submanifold, collapsing Fisher rank to at most one regardless of observation count.
+
+We further discuss how \textbf{Takens delay embedding} can enable low-frequency carriers to encode high-dimensional trajectories---provided the slow waveform reflects genuine multidimensional dynamics rather than a pure sinusoid. This connection to delay embedding suggests (but does not prove) mechanisms by which biological delay architectures (cerebellar parallel fibers, thalamocortical loops) might decode slow-wave programs.
+
+The mathematical results (Sections 2--6) are proved; the biological applications (Sections 7--8) are speculative hypotheses requiring empirical validation.
 \end{abstract}
 
-\noindent\textbf{Keywords:} Fisher information, product manifolds, phase-amplitude coupling, biological oscillations, identifiability
+\noindent\textbf{Keywords:} Fisher information, Takens embedding, phase-amplitude coupling, biological memory, motor control, nested oscillations
 
 %=============================================================================
 \section{Introduction}
 %=============================================================================
 
-Biological systems operate through nested oscillatory hierarchies. In neural systems, gamma oscillations (30--80 Hz) are modulated by theta rhythms (4--8 Hz), which are in turn modulated by slower delta and infra-slow fluctuations \citep{buzsaki2006rhythms}. In cellular biology, circadian rhythms organize ultradian metabolic cycles which contain faster enzymatic oscillations \citep{lloyd2006ultradian}. This hierarchical frequency organization appears ubiquitous across living systems \citep{helm2017annual}.
+A central puzzle in biological computation: how do systems store and execute complex, high-dimensional programs using simple, low-frequency carriers?
 
-Recent theoretical work proposes that intelligence arises from maintaining high-dimensional coherent dynamics \citep{todd2026intelligence}---systems that sustain many coupled degrees of freedom. But where does this dimensionality come from, and what makes it statistically meaningful?
+Motor programs involve precise coordination across thousands of muscles on millisecond timescales. Memories encode rich, high-dimensional patterns of experience. Yet both rely heavily on slow oscillations---delta and theta rhythms that appear almost trivially simple when measured instantaneously. The cerebellum, hippocampus, and neocortex all exhibit nested frequency hierarchies where slow rhythms modulate faster activity \citep{buzsaki2006rhythms}. This architecture is not incidental; it appears ubiquitous across biological systems from neural circuits to circadian-ultradian metabolic cycles \citep{lloyd2006ultradian,helm2017annual}.
 
-We argue that \textbf{nested frequency hierarchies create high-dimensional statistical structure} through a specific mechanism: phase-amplitude coupling between timescales makes slow contextual variables identifiable from fast observables. This is not merely a matter of having multiple oscillators (which trivially yields a product space), but of how cross-scale coupling creates \emph{informative dependencies} that would not exist under independence.
+We present a unified information-geometric framework explaining why this architecture works. Two mechanisms combine:
+
+\begin{enumerate}
+    \item \textbf{Phase-amplitude coupling (PAC)} makes slow phases \emph{identifiable} from fast observations. When gamma amplitude depends on theta phase, observing gamma bursts provides information about theta---the slow variable ``enters the likelihood'' of the fast signal.
+
+    \item \textbf{Takens embedding} allows low-frequency signals to \emph{carry} high-dimensional structure---provided the slow waveform reflects genuine high-dimensional dynamics (not a pure sinusoid). Delay coordinates applied to such signals can reconstruct the underlying state space.
+\end{enumerate}
+
+\textbf{Two types of ``dimension.''} This paper discusses two distinct notions of dimensionality that should not be conflated:
+\begin{itemize}
+    \item \textbf{Phase-manifold dimension} ($\leq K-1$): The number of identifiable relative phase offsets between $K$ frequency bands. This is the parameter space dimension in our Fisher-information analysis. For typical neural systems with 4--6 bands, this is 3--5 dimensions.
+    \item \textbf{Program/state dimension} (potentially large): The dimension of the underlying dynamical system whose trajectory is encoded in slow-wave variations. This is what Takens embedding recovers, and can be much larger than $K-1$.
+\end{itemize}
+The PAC identifiability results (Sections 3--6) concern phase-manifold dimension. The Takens discussion (Section 7.4) concerns program/state dimension. These are complementary: PAC makes the phase coordinates identifiable; Takens explains how those coordinates can index high-dimensional programs.
+
+Recent theoretical work proposes that intelligence requires maintaining high-dimensional coherent dynamics \citep{todd2026intelligence}. This paper provides the geometric foundation: nested frequencies are how biological systems create, store, and retrieve the high-dimensional structure that cognition requires.
 
 \subsection{Main Contributions}
 
@@ -63,25 +82,34 @@ We develop an information-geometric framework with an explicit observation model
 \begin{enumerate}
     \item \textbf{Phase space structure} (Lemma \ref{lem:torus}): $K$ oscillatory bands with unobservable global phase yield a $(K-1)$-dimensional parameter space $\T^{K-1}$ of relative phases.
 
-    \item \textbf{Coupling activates identifiability} (Theorem \ref{thm:coupling}): Under phase-amplitude coupling, the Fisher information matrix generically has nonzero off-diagonal entries, and parameters that are unidentifiable under independence become identifiable. We demonstrate this explicitly with a theta-gamma example.
+    \item \textbf{Coupling activates likelihood dependence} (Theorem \ref{thm:coupling}): Under phase-amplitude coupling, slow phases enter the fast-band likelihood (nonzero score). Each observation carries joint information about multiple phase parameters, creating statistical dependence across directions. With sufficiently rich observations, this can raise Fisher rank toward $K-1$ (Proposition \ref{prop:rank}).
 
-    \item \textbf{Clock collapse} (Theorem \ref{thm:clock}): Global clock synchronization reduces the relative phase parameters to deterministic functions of a single time-offset parameter, collapsing identifiable dimension to at most 1.
+    \item \textbf{Clock collapse} (Theorem \ref{thm:clock}): Global clock synchronization constrains relative phases to a 1-dimensional submanifold, collapsing Fisher rank to at most 1.
 \end{enumerate}
 
-The key insight is that \emph{nesting}---where slow phases modulate fast dynamics---creates statistical dependencies that make the slow phase observable through the fast signal. This is distinct from merely having multiple independent oscillators.
+The key insight is that \emph{nesting}---where slow phases modulate fast dynamics---creates statistical dependencies that make slow phases \emph{present in} the fast-band likelihood. This is necessary but not sufficient for identifiability: one also needs observations rich enough to span the parameter directions. We formalize both conditions.
 
 \subsection{Notation}
 
 We use the following notation throughout:
 \begin{itemize}
-    \item $\phi_k \in S^1$: phase of the $k$-th oscillatory band
+    \item $\phi_k \in S^1$: phase of the $k$-th oscillatory band, with $\omega_1 < \omega_2 < \cdots < \omega_K$ (slow to fast)
     \item $\bm{\phi} = (\phi_1, \ldots, \phi_K) \in \T^K$: full phase vector
-    \item $\psi_j = \phi_j - \phi_1$ for $j \geq 2$: relative phases (parameters)
-    \item $\bm{\psi} = (\psi_2, \ldots, \psi_K) \in \T^{K-1}$: relative phase vector
-    \item $y$: observed signal
-    \item $p(y \mid \bm{\psi})$: likelihood of observation given parameters
+    \item $\psi_j = \phi_{j,0}$ for $j = 1, \ldots, K-1$: initial phase offsets of slow bands (parameters)
+    \item $\bm{\psi} = (\psi_1, \ldots, \psi_{K-1}) \in \T^{K-1}$: parameter vector
+    \item $\bm{y} = (y_1, \ldots, y_N)$: vector of $N$ observations
+    \item $p(\bm{y} \mid \bm{\psi})$: likelihood of observations given parameters
     \item $\FIM(\bm{\psi})$: Fisher information matrix at $\bm{\psi}$
 \end{itemize}
+
+\noindent\textbf{Phase dynamics.} Each oscillator has time-varying phase $\phi_k(t) = \omega_k t + \phi_{k,0}$, where $\omega_k$ is the (known) frequency and $\phi_{k,0}$ is the (unknown) initial phase offset. The \emph{parameters} we wish to estimate are the initial phase offsets of slow bands:
+\begin{equation}
+\psi_j := \phi_{j,0}, \quad j = 1, \ldots, K-1
+\label{eq:param_def}
+\end{equation}
+under the gauge convention below. The instantaneous slow phase at time $t$ is $\phi_j(t) = \omega_j t + \psi_j$.
+
+\noindent\textbf{Gauge convention.} We fix the carrier phase $\phi_{K,0} = 0$. Under this gauge, only the slow-band offsets $\psi_1, \ldots, \psi_{K-1}$ are free parameters. This convention aligns with standard neuroscience practice: the fast carrier phase (e.g., gamma) is extracted via Hilbert transform and serves as the timing reference; slow phases (e.g., theta) are inferred from the amplitude modulation pattern.
 
 %=============================================================================
 \section{Preliminaries}
@@ -103,22 +131,25 @@ Throughout this paper, Fisher information is always computed with respect to \em
 
 \subsection{Phase Variables and the Torus}
 
-A system with $K$ oscillators has phase variables $\bm{\phi} = (\phi_1, \ldots, \phi_K) \in \T^K$, where $\T^K = (S^1)^K$ is the $K$-torus. In many settings, only \emph{relative} phases are observable---the global phase $\Phi = \frac{1}{K}\sum_i \phi_i$ cannot be determined from observations invariant under simultaneous phase shifts.
+A system with $K$ oscillators has phase variables $\bm{\phi} = (\phi_1, \ldots, \phi_K) \in \T^K$, where $\T^K = (S^1)^K$ is the $K$-torus. In many settings, only \emph{relative} phases are of physical interest---the absolute phase of any single oscillator has no intrinsic meaning without an external reference.
 
-\begin{lemma}[Phase space reduction]
+\begin{lemma}[Gauge-fixed parameterization]
 \label{lem:torus}
-If observations are invariant under the diagonal action $\phi_k \mapsto \phi_k + \alpha$ for all $k$, then the effective parameter space is the quotient:
-\begin{equation}
-\T^K / S^1 \cong \T^{K-1}
-\end{equation}
-with coordinates $\psi_j = \phi_j - \phi_1$ for $j = 2, \ldots, K$.
+The $K$-dimensional phase space $\T^K$ can be parameterized by:
+\begin{enumerate}
+    \item[(i)] A reference phase $\phi_{K,0} \in S^1$ (the carrier initial offset, which we set to 0 by gauge choice), and
+    \item[(ii)] $K-1$ slow-band initial offsets $\psi_j = \phi_{j,0}$ for $j = 1, \ldots, K-1$.
+\end{enumerate}
+Under this gauge, $\bm{\psi} \in \T^{K-1}$ are the free parameters.
 \end{lemma}
 
 \begin{proof}
-The diagonal $S^1$ action on $\T^K$ has orbits $\{(\phi_1 + \alpha, \ldots, \phi_K + \alpha) : \alpha \in S^1\}$. Invariant functions depend only on phase differences. The map $(\phi_1, \ldots, \phi_K) \mapsto (\phi_2 - \phi_1, \ldots, \phi_K - \phi_1)$ provides coordinates on the quotient, which is diffeomorphic to $\T^{K-1}$.
+The initial phase vector $(\phi_{1,0}, \ldots, \phi_{K,0}) \in \T^K$ has $K$ components. Fixing $\phi_{K,0} = 0$ leaves $K-1$ free parameters $(\psi_1, \ldots, \psi_{K-1}) \in \T^{K-1}$.
 \end{proof}
 
-This lemma is a standard fact about product tori; the key question is what statistical structure exists on $\T^{K-1}$ under different observation models.
+\begin{remark}[Why gauge-fixing works]
+Our observation model conditions on the carrier phase $\phi_K(t) = \omega_K t$ being extractable (e.g., via Hilbert transform of the bandpassed signal). Once the carrier phase is known, only the slow-band offsets $\psi_j$ affect the amplitude modulation pattern. Shifting all phases by a global constant would change $\phi_K(t)$, but since we extract $\phi_K(t)$ from data rather than assuming it known \emph{a priori}, this is operationally a gauge choice: we define ``time zero'' as a gamma peak.
+\end{remark}
 
 \subsection{Observation Model: Phase-Amplitude Coupling}
 
@@ -128,27 +159,104 @@ We now specify the generative model that makes ``nested frequency hierarchy'' st
 \label{def:observation}
 A \emph{nested frequency observation model} consists of:
 \begin{enumerate}
-    \item Latent phases $\bm{\phi} = (\phi_1, \ldots, \phi_K)$ with frequencies $\omega_1 < \omega_2 < \cdots < \omega_K$ (slow to fast).
+    \item Latent phases $\phi_k(t) = \omega_k t + \phi_{k,0}$ with frequencies $\omega_1 < \omega_2 < \cdots < \omega_K$ (slow to fast). Band $K$ is the fast \emph{carrier}; bands $1, \ldots, K-1$ are slow \emph{modulators}.
     \item A signal $y(t)$ of the form:
     \begin{equation}
-    y(t) = A(\phi_1, \ldots, \phi_{K-1}) \cdot g(\phi_K) + \epsilon(t)
+    y(t) = A(\phi_1(t), \ldots, \phi_{K-1}(t)) \cdot g(\phi_K(t)) + \epsilon(t)
     \label{eq:signal}
     \end{equation}
-    where $A(\cdot)$ is the amplitude modulation by slower phases, $g(\cdot)$ is the fast carrier (e.g., $\cos(\phi_K)$), and $\epsilon(t)$ is observation noise.
-    \item Parameters $\bm{\psi} = (\psi_2, \ldots, \psi_K)$ are relative phases.
+    where $A(\cdot)$ is the amplitude modulation depending on slow phases, $g(\cdot)$ is the fast carrier (e.g., $g(\phi) = \cos(\phi)$), and $\epsilon(t) \sim \mathcal{N}(0, \sigma^2)$ is observation noise.
+    \item Under the gauge $\phi_{K,0} = 0$, the parameters are $\bm{\psi} = (\psi_1, \ldots, \psi_{K-1})$ where $\psi_j = \phi_{j,0}$.
 \end{enumerate}
 \end{definition}
 
-The critical feature is that \textbf{slow phases modulate the amplitude of fast oscillations}. This is the defining characteristic of nested frequency hierarchies, distinguishing them from independent oscillators.
+The critical feature is that \textbf{slow phases modulate the amplitude of fast oscillations}. The amplitude envelope $A(t)$ varies at the \emph{slow} frequencies $\omega_1, \ldots, \omega_{K-1}$, while the carrier $g(\phi_K(t))$ oscillates at the fast frequency $\omega_K$. This is the defining characteristic of phase-amplitude coupling.
 
 \begin{example}[Theta-gamma coupling]
-In hippocampal recordings, gamma oscillations ($\sim$40 Hz) have amplitude modulated by theta phase ($\sim$8 Hz) \citep{lisman2013theta}. The signal model is:
+\label{ex:theta_gamma_intro}
+In hippocampal recordings, gamma oscillations ($\sim$40 Hz) have amplitude modulated by theta phase ($\sim$8 Hz) \citep{lisman2013theta}. With $K=2$ bands: band 1 = theta (slow modulator, $\omega_\theta \approx 8$ Hz), band 2 = gamma (fast carrier, $\omega_\gamma \approx 40$ Hz). The signal model is:
 \begin{equation}
-y(t) = [1 + \alpha \cos(\phi_\theta)] \cos(\phi_\gamma) + \epsilon(t)
+y(t) = [1 + \alpha \cos(\omega_\theta t + \psi)] \cos(\omega_\gamma t) + \epsilon(t)
 \label{eq:theta_gamma}
 \end{equation}
-where $\alpha \in [0,1]$ is the modulation depth. When $\alpha = 0$, the phases are statistically independent in the observation; when $\alpha > 0$, theta phase affects the observable signal.
+where $\psi = \phi_{\theta,0}$ is the theta phase offset (the single parameter under gauge $\phi_{\gamma,0} = 0$), and $\alpha \in [0,1]$ is the modulation depth. The amplitude envelope $[1 + \alpha\cos(\omega_\theta t + \psi)]$ varies at the \emph{slow} theta frequency ($\sim$8 Hz), while the carrier $\cos(\omega_\gamma t)$ oscillates at the \emph{fast} gamma frequency ($\sim$40 Hz). When $\alpha = 0$, theta phase does not affect the observation; when $\alpha > 0$, the modulation pattern depends on $\psi$.
 \end{example}
+
+\begin{remark}[Raw signal vs.\ extracted envelope]
+\label{rem:observation_type}
+Our observation model uses the \emph{raw} oscillatory signal $y(t)$. In practice, PAC analyses often first extract the amplitude envelope $\hat{A}(t)$ via Hilbert transform of the bandpassed fast signal, then study how $\hat{A}(t)$ covaries with slow phase.
+
+The identifiability arguments apply to both approaches:
+\begin{itemize}
+    \item \textbf{Raw signal}: Inference uses $y(t_n)$ directly; the carrier phase appears in the observation.
+    \item \textbf{Extracted envelope}: If demodulation is perfect, the model becomes $\hat{A}(t) = A(t;\bm{\psi}) + \eta(t)$, where $\eta$ is estimation noise. The slow phases still enter the likelihood through $A(t;\bm{\psi})$.
+\end{itemize}
+The key point---that PAC makes slow phases enter the likelihood---holds in either case. We use the raw model for explicitness; envelope-based analyses are an implementation choice.
+\end{remark}
+
+\subsection{Multi-Sample Observations and Fisher Rank}
+
+A critical subtlety: for a \emph{single} scalar observation $y$ with Gaussian noise, the Fisher information matrix for any mean-parameterized model has the form
+\begin{equation}
+\FIM(\bm{\psi}) = \frac{1}{\sigma^2} \nabla_{\bm{\psi}} \mu \, (\nabla_{\bm{\psi}} \mu)^\top
+\label{eq:outer_product}
+\end{equation}
+which is an \textbf{outer product with rank at most 1}, regardless of parameter dimension. This means a single observation can identify at most one parameter direction.
+
+To achieve higher Fisher rank, we need multiple observations. Let $\bm{y} = (y_1, \ldots, y_N)$ be $N$ \textbf{independent} observations at times $t_1, \ldots, t_N$, with means $\mu_n(\bm{\psi}) = \mu(t_n; \bm{\psi})$. Under the independence assumption (i.i.d.\ noise across samples), the Fisher information is:
+\begin{equation}
+\FIM(\bm{\psi}) = \frac{1}{\sigma^2} \sum_{n=1}^{N} \nabla_{\bm{\psi}} \mu_n \, (\nabla_{\bm{\psi}} \mu_n)^\top
+\label{eq:fisher_sum}
+\end{equation}
+
+This sum of outer products can achieve rank up to $\min(N, K-1)$, provided the gradient vectors $\{\nabla_{\bm{\psi}} \mu_n\}$ span a $(K-1)$-dimensional subspace.
+
+\begin{remark}[Extension to correlated noise]
+Real neural time series have temporally correlated noise. With a full covariance matrix $\Sigma$, the Fisher information becomes $\FIM = J^\top \Sigma^{-1} J$ where $J$ is the Jacobian of means. If $\Sigma$ is full-rank, identifiability still depends on the rank of $J$---the span of gradients. Strong temporal correlation or low-rank noise structure can reduce effective information, but the core rank arguments remain valid.
+\end{remark}
+
+\begin{proposition}[Fisher rank from multi-sample observations]
+\label{prop:rank}
+Consider $N$ independent Gaussian observations $y_n \sim \mathcal{N}(\mu_n(\bm{\psi}), \sigma^2)$ where $\bm{\psi} \in \R^{K-1}$.
+\begin{enumerate}
+    \item[(i)] The Fisher information matrix \eqref{eq:fisher_sum} has $\mathrm{rank}(\FIM) \leq \min(N, K-1)$.
+    \item[(ii)] To identify all $K-1$ phase offsets, we need at least $N \geq K-1$ observations whose gradient vectors $\nabla_{\bm{\psi}} \mu_n$ span $\R^{K-1}$.
+    \item[(iii)] For the nested frequency model \eqref{eq:signal} with $A(t; \bm{\psi}) = A_0 + \sum_{j=1}^{K-1}\alpha_j \cos(\omega_j t + \psi_j)$ and $g(\phi_K) = \cos(\omega_K t)$, the Fisher rank equals $K-1$ for generic sampling, provided:
+    \begin{itemize}
+        \item all modulation depths $\alpha_j \neq 0$ for $j = 1, \ldots, K-1$,
+        \item $N \geq K-1$ observations at distinct times, and
+        \item the sampling times $\{t_n\}$ avoid the measure-zero set where gradients fail to span.
+    \end{itemize}
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+(i) Each term $\nabla \mu_n (\nabla \mu_n)^\top$ has rank 1; the sum of $N$ rank-1 matrices has rank at most $N$. The rank is also bounded by the parameter dimension $K-1$.
+
+(ii) Full rank requires $\mathrm{span}\{\nabla \mu_1, \ldots, \nabla \mu_N\} = \R^{K-1}$, which needs at least $K-1$ vectors.
+
+(iii) The mean at time $t_n$ is $\mu_n = A(t_n)\cos(\omega_K t_n)$, so:
+\[
+\frac{\partial \mu_n}{\partial \psi_j} = -\alpha_j \sin(\omega_j t_n + \psi_j) \cos(\omega_K t_n)
+\]
+Define the $N \times (K-1)$ gradient matrix $G$ with entries $G_{nj} = \sin(\omega_j t_n + \psi_j)\cos(\omega_K t_n)$. The Fisher matrix has full rank iff $\mathrm{rank}(G) = K-1$.
+
+\emph{Why the bad set has measure zero:} Consider any $(K-1) \times (K-1)$ submatrix of $G$ (selecting $K-1$ sampling times). Its determinant is a trigonometric polynomial in $(t_1, \ldots, t_{K-1})$, hence analytic. This determinant is \emph{not} identically zero: choosing sampling times $t_n$ that avoid carrier zeros ($\cos(\omega_K t_n) \neq 0$) and are sufficiently spread (so the $\sin(\omega_j t_n + \psi_j)$ terms don't align across all $j$), one obtains a nonsingular submatrix. Since a non-identically-zero analytic function has measure-zero zero set in $\R^{K-1}$, the ``bad'' sampling schedules where all $(K-1) \times (K-1)$ minors vanish form a measure-zero set.
+\end{proof}
+
+\begin{remark}[Connection to amplitude modulation]
+The nested frequency observation model is analogous to amplitude modulation in communications: slow phases modulate the envelope of the fast carrier, and the slow state can be recovered by demodulating the carrier. Fisher information formalizes the capacity to perform this inference under noise.
+\end{remark}
+
+\begin{remark}[Local vs.\ global identifiability]
+\label{rem:local_global}
+Full Fisher rank implies \emph{local} identifiability: at a given $\bm{\psi}$, small perturbations are distinguishable. However, on the torus $\T^{K-1}$, global ambiguities remain:
+\begin{itemize}
+    \item \textbf{Periodicity}: $\psi_j$ and $\psi_j + 2\pi$ are equivalent.
+    \item \textbf{Carrier symmetries}: If the carrier phase is not perfectly fixed, additional equivalences may arise (e.g., $\psi \leftrightarrow \psi + \pi$ under certain symmetries).
+\end{itemize}
+Thus full Fisher rank guarantees local identifiability (up to periodicity), but the posterior may be multi-modal. For estimation, this typically requires either prior information or constraints to resolve global ambiguity.
+\end{remark}
 
 %=============================================================================
 \section{Fisher Information Under Independence}
@@ -159,9 +267,9 @@ We first establish a baseline: what is the Fisher information structure when osc
 
 \begin{proposition}[Block-diagonal Fisher under independence]
 \label{prop:diagonal}
-Suppose the likelihood factorizes as $p(y|\bm{\psi}) = \prod_{j=2}^{K} p_j(y_j|\psi_j)$ where $y_j$ are independent observations of each relative phase. Then the Fisher information matrix is block-diagonal:
+Suppose the likelihood factorizes as $p(y|\bm{\psi}) = \prod_{j=1}^{K-1} p_j(y_j|\psi_j)$ where $y_j$ are independent observations of each relative phase. Then the Fisher information matrix is block-diagonal:
 \begin{equation}
-\FIM(\bm{\psi}) = \mathrm{diag}(\FIM_2(\psi_2), \ldots, \FIM_K(\psi_K))
+\FIM(\bm{\psi}) = \mathrm{diag}(\FIM_1(\psi_1), \ldots, \FIM_{K-1}(\psi_{K-1}))
 \end{equation}
 where $\FIM_j(\psi_j) = \E[(\partial_{\psi_j} \log p_j)^2]$.
 \end{proposition}
@@ -185,93 +293,109 @@ This sets up the key question: how does phase-amplitude coupling change this pic
 \label{sec:coupling}
 %=============================================================================
 
-We now prove that phase-amplitude coupling generically produces off-diagonal Fisher information and, crucially, can make previously unidentifiable parameters identifiable.
+We now prove that phase-amplitude coupling generically creates likelihood dependencies across phase parameters and, crucially, can make previously unidentifiable parameters identifiable.
 
 \subsection{General Result}
 
-\begin{theorem}[Coupling activates identifiability]
+\begin{theorem}[Coupling activates likelihood dependence]
 \label{thm:coupling}
-Consider the observation model \eqref{eq:signal} with Gaussian noise $\epsilon \sim \mathcal{N}(0, \sigma^2)$. Let $A(\phi_1, \ldots, \phi_{K-1}) = A_0 + \sum_{j=1}^{K-1} \alpha_j f_j(\phi_j)$ where $f_j$ are non-constant functions and $\alpha_j$ are modulation depths.
+Consider the observation model \eqref{eq:signal} with Gaussian noise $\epsilon \sim \mathcal{N}(0, \sigma^2)$. Parameterize by initial phase offsets $\bm{\psi} = (\psi_1, \ldots, \psi_{K-1})$ as in \eqref{eq:param_def}. Let the amplitude modulation have the form $A(t; \bm{\psi}) = A_0 + \sum_{j=1}^{K-1} \alpha_j f_j(\omega_j t + \psi_j)$ where $f_j$ are non-constant smooth functions (e.g., $\cos$) and $\alpha_j$ are modulation depths.
 
 \begin{enumerate}
-    \item[(i)] If all $\alpha_j = 0$ (no modulation), then slow phases $\phi_1, \ldots, \phi_{K-1}$ are unidentifiable from observations of $y$: the Fisher information for these parameters is zero.
+    \item[(i)] If $\alpha_j = 0$ for all $j$, then slow phases do not appear in the likelihood: the score $\partial_{\psi_j} \log p(y|\bm{\psi}) = 0$ identically, and these directions lie in the null space of $\FIM$.
 
-    \item[(ii)] If $\alpha_j \neq 0$ for some $j$, then $\phi_j$ becomes identifiable: $\FIM_{jj} > 0$. Moreover, if multiple $\alpha_j \neq 0$, the Fisher matrix generically has nonzero off-diagonal entries.
+    \item[(ii)] If $\alpha_j \neq 0$ for some $j$, then $\psi_j$ \emph{enters the likelihood}: the score depends nontrivially on $\psi_j$. For a single scalar observation, $\FIM$ has the outer-product form \eqref{eq:outer_product} with rank 1. With sufficiently rich observations (Proposition \ref{prop:rank}), the direction $\psi_j$ can become identifiable.
+
+    \item[(iii)] Under generic coupling (multiple $\alpha_j \neq 0$), each observation mean $\mu(t;\bm{\psi})$ depends on multiple phase parameters simultaneously. In the given parameterization, this means the score components $\partial_{\psi_j}\log p$ and $\partial_{\psi_k}\log p$ are generically coupled (both depend on the same observation), and the Fisher matrix is not block-diagonal. This reflects the structural fact that \emph{each observation carries joint information about multiple phases}---a property that persists under reparameterization.
 \end{enumerate}
 \end{theorem}
 
 \begin{proof}
-For Gaussian noise, the log-likelihood is:
+For Gaussian noise, the log-likelihood for a single observation at time $t$ is:
 \begin{equation}
-\log p(y|\bm{\phi}) = -\frac{1}{2\sigma^2}[y - A(\phi_1,\ldots,\phi_{K-1})g(\phi_K)]^2 + \text{const}
+\log p(y|\bm{\psi}) = -\frac{1}{2\sigma^2}[y - A(t;\bm{\psi})\cos(\omega_K t)]^2 + \text{const}
+\end{equation}
+where $A(t;\bm{\psi}) = A_0 + \sum_j \alpha_j f_j(\omega_j t + \psi_j)$ depends on the slow phase offsets.
+
+The score for $\psi_j$ is:
+\begin{equation}
+\frac{\partial \log p}{\partial \psi_j} = \frac{1}{\sigma^2}[y - A\cos(\omega_K t)] \cdot \alpha_j f_j'(\omega_j t + \psi_j) \cdot \cos(\omega_K t)
 \end{equation}
 
-The score for $\phi_j$ (with $j < K$) is:
+(i) If $\alpha_j = 0$, then $\partial A / \partial \psi_j = 0$, so the score is identically zero.
+
+(ii) If $\alpha_j \neq 0$, then $\partial A / \partial \psi_j = \alpha_j f_j'(\omega_j t + \psi_j) \neq 0$ generically. The single-observation Fisher information is:
 \begin{equation}
-\frac{\partial \log p}{\partial \phi_j} = \frac{1}{\sigma^2}[y - Ag(\phi_K)] \cdot \frac{\partial A}{\partial \phi_j} \cdot g(\phi_K)
+\FIM(\bm{\psi}) = \frac{1}{\sigma^2} \nabla_{\bm{\psi}}\mu \, (\nabla_{\bm{\psi}}\mu)^\top
 \end{equation}
+which has rank 1 (outer product). By Proposition \ref{prop:rank}, with $N \geq K-1$ generic observations, the sum \eqref{eq:fisher_sum} can achieve full rank.
 
-(i) If $\alpha_j = 0$, then $\partial A / \partial \phi_j = 0$, so the score is identically zero and $\FIM_{jj} = 0$.
-
-(ii) If $\alpha_j \neq 0$, then $\partial A / \partial \phi_j = \alpha_j f_j'(\phi_j) \neq 0$ generically. The Fisher information is:
-\begin{align}
-\FIM_{jj} &= \E\left[\left(\frac{\partial \log p}{\partial \phi_j}\right)^2\right] \\
-&= \frac{1}{\sigma^4} \E[(y - Ag)^2] \cdot \left(\frac{\partial A}{\partial \phi_j}\right)^2 g(\phi_K)^2 \\
-&= \frac{1}{\sigma^2} \left(\alpha_j f_j'(\phi_j)\right)^2 g(\phi_K)^2 > 0
-\end{align}
-
-For the off-diagonal terms with $j \neq k$ (both $< K$):
-\begin{equation}
-\FIM_{jk} = \frac{1}{\sigma^2} \frac{\partial A}{\partial \phi_j} \frac{\partial A}{\partial \phi_k} g(\phi_K)^2
-\end{equation}
-which is generically nonzero when both $\alpha_j, \alpha_k \neq 0$.
+(iii) The gradient $\nabla_{\bm{\psi}}\mu$ has multiple nonzero components when multiple $\alpha_j \neq 0$. The outer product $vv^\top$ for $v = (v_1, \ldots, v_m)$ has $(vv^\top)_{jk} = v_j v_k \neq 0$ when both $v_j, v_k \neq 0$.
 \end{proof}
 
-\textbf{Interpretation.} The theorem formalizes a simple but important point: \emph{phase-amplitude coupling makes slow phases visible in fast observations}. Without coupling, observing gamma tells you nothing about theta. With coupling, theta phase modulates gamma amplitude, so theta becomes estimable from gamma recordings.
+\textbf{Interpretation.} The theorem formalizes a key distinction: \emph{coupling makes slow phases present in the fast-band likelihood} (necessary condition), but \emph{identifiability requires sufficient observations} to span the parameter directions (sufficiency). A single observation can identify at most one direction; recovering all $K-1$ relative phases requires at least $K-1$ informative samples.
 
 \subsection{Worked Example: Theta-Gamma System}
 
-We now compute the Fisher information matrix explicitly for the canonical two-band case.
+We now compute the Fisher information explicitly for the canonical two-band case ($K=2$), illustrating how coupling activates likelihood dependence.
 
 \begin{example}[Fisher information for theta-gamma coupling]
 \label{ex:theta_gamma}
-Consider the model \eqref{eq:theta_gamma}:
+Consider the model \eqref{eq:theta_gamma} at a single time $t$:
 \begin{equation}
-y = [1 + \alpha \cos(\psi)] \cos(\phi_\gamma) + \epsilon, \quad \epsilon \sim \mathcal{N}(0, \sigma^2)
+y = [1 + \alpha \cos(\omega_\theta t + \psi)] \cos(\omega_\gamma t) + \epsilon, \quad \epsilon \sim \mathcal{N}(0, \sigma^2)
 \end{equation}
-where $\psi = \phi_\theta - \phi_\gamma$ is the relative phase (the parameter of interest, since global phase is unobservable) and we condition on $\phi_\gamma$ being known from the fast carrier.
+Here $\psi = \phi_{\theta,0}$ is the theta phase offset---the single parameter in this $K=2$ system (under gauge $\phi_{\gamma,0} = 0$).
 
-The log-likelihood is:
-\begin{equation}
-\log p(y|\psi) = -\frac{1}{2\sigma^2}[y - (1+\alpha\cos\psi)\cos\phi_\gamma]^2 + \text{const}
-\end{equation}
+\textbf{What is known vs.\ unknown.} The frequencies $\omega_\theta, \omega_\gamma$ and modulation depth $\alpha$ are known (estimated from the power spectrum). The observation time $t$ is known. The carrier phase $\omega_\gamma t$ is known because we fix the gauge. The unknown is the \emph{theta phase offset} $\psi$, which determines the timing of amplitude peaks relative to the carrier.
+
+Define $\Theta(t) := \omega_\theta t + \psi$ (the instantaneous theta phase). The mean is $\mu = (1 + \alpha\cos\Theta(t))\cos(\omega_\gamma t)$.
 
 The score is:
 \begin{equation}
-\frac{\partial \log p}{\partial \psi} = \frac{\alpha \sin\psi \cos\phi_\gamma}{\sigma^2}[y - (1+\alpha\cos\psi)\cos\phi_\gamma]
+\frac{\partial \log p}{\partial \psi} = -\frac{1}{\sigma^2}[y - \mu] \cdot \alpha \sin(\Theta(t)) \cos(\omega_\gamma t)
 \end{equation}
+(the minus sign arises because $\partial\mu/\partial\psi = -\alpha\sin(\Theta)\cos(\omega_\gamma t)$).
 
-The Fisher information is:
-\begin{align}
-\FIM(\psi) &= \E\left[\left(\frac{\partial \log p}{\partial \psi}\right)^2\right] \\
-&= \frac{\alpha^2 \sin^2\psi \cos^2\phi_\gamma}{\sigma^4} \cdot \E[(y - (1+\alpha\cos\psi)\cos\phi_\gamma)^2] \\
-&= \frac{\alpha^2 \sin^2\psi \cos^2\phi_\gamma}{\sigma^2}
+The Fisher information (for this single observation) is:
+\begin{equation}
+\FIM(\psi; t) = \frac{\alpha^2 \sin^2(\omega_\theta t + \psi) \cos^2(\omega_\gamma t)}{\sigma^2}
 \label{eq:fim_example}
-\end{align}
+\end{equation}
 
 \textbf{Key observations:}
 \begin{enumerate}
-    \item When $\alpha = 0$ (no coupling): $\FIM(\psi) = 0$. Theta phase is \emph{completely unidentifiable} from gamma observations.
+    \item When $\alpha = 0$ (no coupling): $\FIM = 0$. The parameter $\psi$ \emph{does not appear} in the likelihood---it is absent, not merely hard to estimate.
 
-    \item When $\alpha > 0$ (coupling present): $\FIM(\psi) > 0$ for generic $\psi$ (except at $\psi = 0, \pi$ where modulation effect vanishes). Theta phase \emph{becomes identifiable}.
+    \item When $\alpha > 0$ (coupling present): $\FIM > 0$ for generic $\psi, t$. The theta phase \emph{enters} the likelihood and can contribute to identifiability.
 
-    \item Fisher information scales as $\alpha^2$: stronger coupling yields more precise estimation.
+    \item This is a $K=2$ system with one parameter, so a single informative observation suffices for identifiability (Proposition \ref{prop:rank} with $K-1 = 1$).
 
-    \item Fisher information depends on $\phi_\gamma$: observations at $\phi_\gamma = \pi/2$ (zero-crossings of carrier) are uninformative.
+    \item Fisher information scales as $\alpha^2$: stronger coupling yields more precise estimation (lower Cramér-Rao bound).
+
+    \item Observations at $\omega_\gamma t = \pi/2$ (carrier zero-crossings) or $\omega_\theta t + \psi = 0, \pi$ (modulation extrema) are uninformative.
 \end{enumerate}
 \end{example}
 
-This example illustrates the core mechanism: nested frequency structure, through phase-amplitude coupling, creates statistical dependencies that ``lift'' hidden slow variables into the observable fast signal.
+This example illustrates the core mechanism: phase-amplitude coupling makes the slow phase \emph{present in} the fast-band likelihood. For $K=2$, one parameter and one observation suffice; for $K > 2$, we need at least $K-1$ informative observations to span the parameter space.
+
+\begin{example}[Explicit Fisher metric for $K=3$]
+\label{ex:fisher_metric_K3}
+Consider $K=3$ bands with slow modulators at frequencies $\omega_1, \omega_2$ and carrier at $\omega_3$. The parameter space is $\T^2 = S^1 \times S^1$ with coordinates $\bm{\psi} = (\psi_1, \psi_2)$.
+
+With $N=2$ observations at times $t_1, t_2$, the gradient matrix is $G \in \R^{2 \times 2}$ with entries
+\[
+G_{nj} = -\alpha_j \sin(\omega_j t_n + \psi_j)\cos(\omega_3 t_n).
+\]
+The Fisher metric (as a Riemannian metric on $\T^2$) is
+\begin{equation}
+g_{jk}(\bm{\psi}) = \FIM_{jk}(\bm{\psi}) = \frac{1}{\sigma^2}\sum_{n=1}^{2} \frac{\partial \mu_n}{\partial \psi_j}\frac{\partial \mu_n}{\partial \psi_k} = \frac{1}{\sigma^2}(G^\top G)_{jk}.
+\end{equation}
+
+\textbf{Geometric interpretation.} The metric $g$ defines distances on $\T^2$: the length of a curve $\bm{\psi}(s)$ is $\int \sqrt{g_{jk}\dot\psi^j\dot\psi^k}\,ds$. Directions with large eigenvalues are ``stiff'' (small parameter changes produce large likelihood changes); directions with small eigenvalues are ``sloppy'' (hard to identify).
+
+At generic $(\psi_1, \psi_2)$ with well-chosen $(t_1, t_2)$, the metric is positive-definite with rank 2, confirming both phases are locally identifiable. The metric varies smoothly over $\T^2$, making the statistical manifold a genuine Riemannian manifold.
+\end{example}
 
 \subsection{What Coupling Does \emph{Not} Do}
 
@@ -279,6 +403,8 @@ To prevent misunderstanding, we clarify what Theorem \ref{thm:coupling} does \em
 
 \begin{enumerate}
     \item \textbf{Coupling does not increase dimension beyond the parameter space.} If you have $K-1$ relative phases, the Fisher matrix is at most $(K-1) \times (K-1)$ with rank at most $K-1$. Coupling cannot create dimensions that don't exist.
+
+    \item \textbf{A single scalar observation has Fisher rank at most 1.} Even with coupling, a single observation cannot identify more than one parameter direction (equation \eqref{eq:outer_product}). High-dimensional identifiability requires multiple observations whose gradients span the parameter space.
 
     \item \textbf{Strong coupling can reduce effective dimension.} Phase-locking (complete synchronization) imposes constraints that \emph{reduce} the number of free parameters. Our ``activation'' result concerns the regime where coupling creates informative dependencies, not hard constraints.
 
@@ -293,40 +419,65 @@ To prevent misunderstanding, we clarify what Theorem \ref{thm:coupling} does \em
 We now characterize what happens when all oscillators are locked to a global clock.
 
 \begin{definition}[Clock synchronization]
-A system of $K$ oscillators is \emph{clock-synchronized} if all phases are deterministic functions of a global time reference:
+\label{def:clock}
+A system of $K$ oscillators is \emph{clock-synchronized} if all phases are integer multiples of a single base clock:
 \begin{equation}
-\phi_k(t) = \omega_k t + \phi_0 \quad \text{for all } k
+\phi_k(t) = n_k \Phi(t), \quad \text{where } \Phi(t) = \omega_0 t + \Phi_0
 \end{equation}
-where $\phi_0$ is the initial clock phase and $\omega_k = n_k \omega_0$ are integer multiples of a base frequency $\omega_0$.
+Here $\Phi(t)$ is the base clock phase, $\Phi_0$ is the initial clock offset (unknown to the observer), $\omega_0$ is the base frequency, and $n_k$ are positive integer multipliers with $n_1 < n_2 < \cdots < n_K$.
 \end{definition}
 
-Under clock synchronization, the relative phases become:
+Under clock synchronization, the instantaneous relative phases (with respect to the carrier, band $K$) become:
 \begin{equation}
-\psi_j(t) = \phi_j(t) - \phi_1(t) = (n_j - n_1)\omega_0 t
+\delta_j(t) := \phi_j(t) - \phi_K(t) = (n_j - n_K)\Phi(t)
 \end{equation}
-These are deterministic functions of time, not free parameters.
+(We use $\delta_j$ rather than $\psi_j$ to distinguish these time-varying locked phases from the free parameters $\psi_j$ in the nested model.) All relative phases are deterministic functions of the single clock phase $\Phi(t)$.
 
 \begin{theorem}[Clock collapse]
 \label{thm:clock}
-Under clock synchronization:
+Under clock synchronization (Definition \ref{def:clock}):
 \begin{enumerate}
-    \item[(i)] The relative phases $\psi_j(t)$ are deterministic functions of the single parameter $t$ (or equivalently, $\phi_0$).
+    \item[(i)] The relative phases $\delta_j(t)$ are deterministic functions of $\Phi(t)$. If observation time $t$ is known, then $\Phi(t) = \omega_0 t + \Phi_0$ depends only on the single unknown $\Phi_0$.
 
-    \item[(ii)] The effective parameter dimension is at most 1: only the time offset $\phi_0$ (equivalently, the clock phase) is a free parameter.
+    \item[(ii)] The effective parameter dimension is at most 1: the only free parameter is the clock offset $\Phi_0$. The Fisher information for multi-sample observations has rank at most 1.
 
-    \item[(iii)] The trajectory $\bm{\psi}(t)$ traces a 1-dimensional curve in $\T^{K-1}$. At any fixed time, the system occupies a single point, not a distribution over phases.
+    \item[(iii)] The trajectory $\bm{\delta}(\Phi)$ traces a 1-dimensional closed curve in $\T^{K-1}$. Since the coefficients $(n_j - n_K)$ are integers, the trajectory is periodic in $\Phi$ with period $2\pi/\gcd(|n_1 - n_K|, \ldots, |n_{K-1} - n_K|)$. The system is constrained to this curve; it cannot access the full $(K-1)$-dimensional torus.
 \end{enumerate}
 \end{theorem}
 
 \begin{proof}
-(i) By definition, $\psi_j(t) = (n_j - n_1)\omega_0 t$ is determined by $t$.
+(i) By definition, $\delta_j(t) = (n_j - n_K)\Phi(t)$. With $t$ known, all $\delta_j$ are functions of the single parameter $\Phi_0$.
 
-(ii) Any observation $y(t)$ depends on $\bm{\phi}(t)$, which depends only on $t$ and $\phi_0$. The likelihood $p(y|\phi_0)$ is parameterized by a single parameter, so Fisher rank $\leq 1$.
+(ii) The mean $\mu(t; \Phi_0)$ depends on $\Phi_0$ through $\Phi(t)$. The Fisher information from $N$ observations is:
+\begin{equation}
+\FIM(\Phi_0) = \frac{1}{\sigma^2} \sum_{n=1}^{N} \left(\frac{\partial \mu_n}{\partial \Phi_0}\right)^2
+\end{equation}
+This is a sum of scalars (each observation contributes to estimating the single parameter $\Phi_0$), not a matrix---the parameter space is 1-dimensional.
 
-(iii) The map $t \mapsto \bm{\psi}(t)$ is a curve in $\T^{K-1}$. If frequencies are commensurate (all $n_j$ integers), this is a closed orbit; if incommensurate, it winds densely. Either way, it is 1-dimensional.
+(iii) The map $\Phi \mapsto ((n_1 - n_K)\Phi, \ldots, (n_{K-1} - n_K)\Phi)$ has 1-dimensional image in $\T^{K-1}$. Since all coefficients are integers, the image is a closed curve (torus knot), not a dense winding.
 \end{proof}
 
-\textbf{Interpretation.} A global clock destroys the product structure of independent phases. Instead of $K-1$ free relative phases, you have one clock phase that determines everything. The system cannot maintain high-dimensional phase relationships because all timing is slaved to the clock.
+\textbf{Interpretation.} A global clock constrains the system to a 1-dimensional submanifold of phase space. Instead of $K-1$ independent relative phases, the clock imposes $(K-2)$ constraints, leaving only the clock offset as a free parameter. No amount of observation can identify more than this single dimension---the constraint is geometric, not statistical.
+
+Figure \ref{fig:torus_clock} illustrates this contrast for $K=3$: the full parameter space is the 2-torus $\T^2$, but clock synchronization constrains the system to a 1-dimensional closed curve (a torus knot) winding through this space.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/torus_clock.pdf}
+\caption{Geometric contrast between nested coupling and clock synchronization for $K=3$ bands. (a) Under nested coupling, trajectories can explore the full 2-torus $\T^2$ of relative phase offsets $(\psi_1, \psi_2)$. (b) Under clock synchronization, all relative phases are deterministic functions of a single base clock, constraining the system to a 1-dimensional closed curve (red). The clock curve cannot access most of the torus---this is the geometric origin of dimensional collapse.}
+\label{fig:torus_clock}
+\end{figure}
+
+\begin{remark}[Comparing assumptions across models]
+\label{rem:assumptions}
+To ensure a fair comparison between nested and clocked systems:
+\begin{itemize}
+    \item \textbf{Both models}: observation times $t_n$ are known; noise is i.i.d.\ Gaussian; frequencies are known.
+    \item \textbf{Nested model}: carrier phase is extractable (gauge-fixed); parameters are slow-band offsets $\psi_j = \phi_{j,0}$ for $j = 1, \ldots, K-1$, each freely varying.
+    \item \textbf{Clock model}: integer multipliers $n_k$ are known; the single parameter is the clock offset $\Phi_0$, which determines all phases simultaneously.
+\end{itemize}
+The dimensional contrast arises from the \emph{constraint structure}, not from asymmetric assumptions about what is observed. Clock synchronization \emph{deterministically couples} all phases (all are integer multiples of one base), collapsing $K-1$ potential degrees of freedom to 1. Nested coupling leaves slow-band offsets free (amplitude-modulated, but not phase-locked).
+\end{remark}
 
 \subsection{Application to Digital Systems}
 
@@ -360,30 +511,41 @@ We summarize the Fisher information structure under different architectures:
 \toprule
 \textbf{Architecture} & \textbf{Parameter space} & \textbf{Fisher structure} & \textbf{Identifiable dim.} \\
 \midrule
-$K$ independent bands & $\T^{K-1}$ & Diagonal (or zero) & $\leq K-1$ \\
-$K$ nested bands (coupled) & $\T^{K-1}$ & Dense, off-diagonal & $\leq K-1$\textsuperscript{*} \\
-Clock-synchronized & 1D (time offset) & Scalar & $\leq 1$ \\
+$K$ independent bands & $\T^{K-1}$ & Factorized likelihood & $\leq K-1$\textsuperscript{\dag} \\
+$K$ nested bands (coupled) & $\T^{K-1}$ & Non-factorized likelihood & $\leq K-1$\textsuperscript{*} \\
+Clock-synchronized & 1D submanifold & Scalar & $\leq 1$ \\
 \bottomrule
 \end{tabular}
-\caption{Fisher information structure under different oscillatory architectures. \textsuperscript{*}Coupling activates identifiability of phases that are unidentifiable under independence; see Example \ref{ex:theta_gamma}.}
+\caption{Fisher information structure under different oscillatory architectures. \textsuperscript{\dag}Requires direct observation of each band. \textsuperscript{*}With $N \geq K-1$ informative observations; coupling makes slow phases enter the fast-band likelihood.}
 \label{tab:comparison}
 \end{table}
 
 \begin{corollary}[Identifiability gap]
 \label{cor:gap}
-Under the nested frequency observation model (Definition \ref{def:observation}):
+Under the nested frequency observation model (Definition \ref{def:observation}) with $N \geq K-1$ observations:
 \begin{enumerate}
-    \item With $K$ coupled bands and generic modulation depths, all $K-1$ relative phases are identifiable from fast-band observations.
-    \item Under global clock synchronization, at most 1 parameter (time offset) is identifiable.
+    \item With $K$ coupled bands and generic modulation depths, up to $K-1$ relative phases can become identifiable from fast-band observations alone (Proposition \ref{prop:rank}).
+    \item Under global clock synchronization, at most 1 parameter (clock offset) is identifiable, regardless of observation count.
 \end{enumerate}
-The identifiability gap between nested biological systems and clock-synchronized systems is $K-2$ dimensions.
+The maximal identifiability gap is $K-2$ dimensions: nested coupling can support $K-1$ identifiable directions where clock synchronization supports only 1.
 \end{corollary}
 
-For neural systems with 4--6 canonical frequency bands (delta, theta, alpha, beta, gamma, high-gamma), this represents 3--5 identifiable relative phases under coupling, versus at most 1 under global clock synchronization.
+For neural systems with 4--6 canonical frequency bands (delta, theta, alpha, beta, gamma, high-gamma), this represents up to 3--5 identifiable relative phases under coupling with sufficient observations, versus at most 1 under global clock synchronization.
+
+Figure \ref{fig:fisher_rank} illustrates this contrast with a simulation: for $K=4$ bands (three slow modulators at 2, 5, 8 Hz; one carrier at 40 Hz), the nested model achieves full rank ($K-1=3$) with $N \geq 3$ observations, while the clock model remains at rank 1 regardless of $N$.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/fisher_rank.pdf}
+\caption{Fisher rank under nested coupling vs.\ clock synchronization. (a) Rank of Fisher information matrix as a function of sample size $N$. The nested model achieves full rank $K-1=3$ once $N \geq K-1$; the clock model is constrained to rank 1 regardless of $N$. (b) Eigenvalue spectrum for the nested model with $N=10$ observations, showing three nonzero eigenvalues corresponding to the three identifiable slow-phase parameters. \textbf{Simulation parameters:} $K=4$ bands with slow modulators at 2, 5, 8 Hz and carrier at 40 Hz; modulation depths $\alpha_j = 0.3$; noise $\sigma = 0.1$; observations uniformly sampled on $[0, 1]$ s with small random jitter.}
+\label{fig:fisher_rank}
+\end{figure}
 
 %=============================================================================
 \section{Discussion}
 %=============================================================================
+
+\textbf{Scope note.} Sections 2--6 contain the formal results: definitions, theorems, and proofs about Fisher information structure under nested coupling vs.\ clock synchronization. This section and Section 8 (Applications) offer \emph{interpretation and speculation}---connections to Takens embedding, biological mechanisms, and clinical hypotheses that are suggested by the formalism but not proved by it. We flag speculative claims explicitly.
 
 \subsection{What Nesting Contributes Beyond Multiple Oscillators}
 
@@ -393,12 +555,14 @@ The answer is in the observation model. \emph{Nesting} refers to the hierarchica
 \begin{enumerate}
     \item \textbf{Slow phases are not directly observed}---in typical recordings, you measure fast activity (spikes, gamma, etc.), not the slow envelope directly.
 
-    \item \textbf{Phase-amplitude coupling makes slow phases observable through fast signals}---this is the ``activation'' of Theorem \ref{thm:coupling}.
+    \item \textbf{Phase-amplitude coupling makes slow phases enter the fast-band likelihood}---this is the ``activation'' of Theorem \ref{thm:coupling}. Without coupling, the slow-phase score is identically zero.
+
+    \item \textbf{Multi-sample observations can achieve full-rank Fisher information}---Proposition \ref{prop:rank} shows that with $N \geq K-1$ informative observations, coupling enables identification of all $K-1$ relative phases from fast-band data alone.
 
     \item \textbf{The hierarchy provides natural multiscale coordinates}---slow phases set context, fast phases carry content, and the nesting structure determines which variables can be inferred from which observations.
 \end{enumerate}
 
-Without the nesting structure (phase-amplitude coupling), independent oscillators would give a product space with diagonal (or zero) Fisher information---you could estimate phases you directly observe, but not others. Nesting creates the statistical dependencies that make the full phase structure accessible.
+Without the nesting structure (phase-amplitude coupling), independent oscillators would give a product space with diagonal (or zero) Fisher information---you could estimate phases you directly observe, but not others. Nesting creates the statistical dependencies that make the full phase structure accessible from partial observations.
 
 \subsection{Why Biology Uses Nested Frequencies}
 
@@ -407,6 +571,94 @@ The ubiquity of nested frequency hierarchies in biological systems \citep{buzsak
 Our analysis suggests a complementary geometric explanation: \textbf{nested frequencies are how biological systems create identifiable multiscale structure}. The slow contextual variables (mood, task state, circadian phase) become estimable from fast observables (neural spikes, gene expression bursts) precisely because of cross-scale coupling.
 
 This may explain why biological systems consistently employ nested architectures rather than independent oscillators: the nesting structure maximizes what can be inferred about system state from available observations.
+
+\subsection{The Phase Manifold as Continuous Timing Structure}
+
+The Fisher metric on $\T^{K-1}$ provides a \emph{continuous} coordinate system for relative timing relationships. Phase offsets vary continuously, and the statistical dependencies created by PAC are smooth functions of these offsets.
+
+This contrasts with globally clocked systems, where timing advances in discrete integer steps. The continuous phase manifold may be relevant to biological coordination problems (motor control, perception, memory) that require smooth interpolation of timing relationships---though formalizing spatial aspects (conduction delays, propagation topology) requires extending the present framework.
+
+\subsection{Takens Embedding: Low Frequency Carries High Dimension}
+
+A natural question: if slow oscillations are ``low-frequency,'' how can they carry complex, high-dimensional programs?
+
+Takens' embedding theorem \citep{takens1981} provides the answer. For a deterministic dynamical system with $d$ degrees of freedom, time-delayed copies of a single scalar observable---$x(t), x(t-\tau), x(t-2\tau), \ldots$---can reconstruct the system's complete state space topology. Specifically, an embedding dimension of $2d+1$ delay coordinates generically suffices for diffeomorphic reconstruction.
+
+\textbf{Formal assumptions.} The theorem requires: (i) smooth deterministic dynamics on a compact manifold, (ii) a generic (non-degenerate) scalar observation function, and (iii) sufficient embedding dimension. In practice, neural data involves noise and nonstationarity, so embeddings are approximate. There is a substantial literature on delay embedding with noise \citep{casdagli1991state}; the key insight is that moderate noise degrades but does not destroy the topological structure, while embedding dimension may need to be increased.
+
+\textbf{Critical caveat.} If the slow signal were an exact sinusoid, delay embedding would recover only a \textbf{2-dimensional closed curve} (an ellipse)---not a high-dimensional attractor. High-dimensional reconstruction requires that the observed slow waveform is a \emph{generic scalar measurement of a higher-dimensional state}. In biological oscillations, this condition is satisfied because:
+\begin{itemize}
+    \item Amplitude varies with system state (arousal, attention, task demands)
+    \item Frequency drifts and phase slips encode state transitions
+    \item Non-sinusoidal waveform components (harmonics) carry additional information
+    \item Nonstationarity reflects the trajectory through state space
+\end{itemize}
+The ``slow oscillation'' is not a pure sinusoid but a \emph{projection} of high-dimensional neural dynamics onto a narrow frequency band. It is this projection, not the carrier frequency per se, that determines embedding dimension.
+
+The implication: \textbf{low frequency does not mean low complexity}, provided the slow signal reflects genuine high-dimensional dynamics rather than an isolated oscillator. The complexity is encoded in the \emph{waveform variations}, not the carrier frequency.
+
+Biological delay architectures can implement Takens embedding in hardware. Consider a delta-band signal ($\sim$2 Hz) with appropriate delay coordinates:
+\begin{equation}
+    \mathbf{x}(t) = \bigl[ y(t),\, y(t-\tau),\, y(t-2\tau),\, \ldots \bigr]
+\end{equation}
+The optimal embedding delay is $\tau^* \approx 1/(4f)$ \citep{fraser1986}, placing delay taps at quarter-period intervals. For a 2 Hz delta oscillation, $\tau^* \approx 125$ ms; for 40 Hz gamma, $\tau^* \approx 6$ ms. Cerebellar parallel fibers (delays 2--8 ms) and thalamocortical loops (delays 10--100 ms) operate in precisely these ranges.
+
+\subsubsection{Formal Connection: Delay Vectors as Multi-Sample Observations}
+
+The connection between Takens embedding and Fisher rank is not merely analogical---it is exact. A delay vector \emph{is} a multi-sample observation in the sense of Proposition \ref{prop:rank}.
+
+\begin{proposition}[Delay embedding and Fisher rank]
+\label{prop:delay}
+Consider the nested frequency model \eqref{eq:signal} observed via an $m$-dimensional delay vector:
+\begin{equation}
+\mathbf{y}(t) = \bigl(y(t), y(t-\tau), y(t-2\tau), \ldots, y(t-(m-1)\tau)\bigr)^\top
+\end{equation}
+where each component $y(t - k\tau) = A(t-k\tau)\cos(\omega_K(t-k\tau)) + \epsilon_k$ with independent noise $\epsilon_k \sim \mathcal{N}(0, \sigma^2)$.
+
+Under the conditions of Proposition \ref{prop:rank}, the Fisher information matrix for $\bm{\psi}$ based on observing $\mathbf{y}(t)$ is:
+\begin{equation}
+\FIM(\bm{\psi}) = \frac{1}{\sigma^2} \sum_{k=0}^{m-1} \nabla_{\bm{\psi}} \mu(t-k\tau) \, \bigl(\nabla_{\bm{\psi}} \mu(t-k\tau)\bigr)^\top
+\label{eq:delay_fisher}
+\end{equation}
+where $\mu(s) = A(s;\bm{\psi})\cos(\omega_K s)$ is the mean at time $s$.
+
+If $m \geq K-1$ and the delay $\tau$ is chosen such that the gradient vectors $\{\nabla_{\bm{\psi}}\mu(t-k\tau)\}_{k=0}^{m-1}$ span $\R^{K-1}$, then $\mathrm{rank}(\FIM) = K-1$.
+\end{proposition}
+
+\begin{proof}
+The delay vector has independent Gaussian components with means $\mu_k = \mu(t-k\tau)$. By the additivity of Fisher information for independent observations, the total Fisher matrix is the sum \eqref{eq:delay_fisher}. The rank argument follows from Proposition \ref{prop:rank}: with $m \geq K-1$ delay taps at times that avoid the measure-zero bad set, the gradients span the parameter space.
+\end{proof}
+
+\textbf{Biological interpretation.} Neural delay lines (axonal conduction, synaptic delays) implement \eqref{eq:delay_fisher} in hardware. A neuron receiving inputs via parallel fibers with staggered delays effectively computes a delay vector. The downstream readout performs implicit Fisher-optimal inference on $\bm{\psi}$---the slow-phase structure encoded in the signal.
+
+\textbf{Optimal delay.} For oscillatory signals, the optimal embedding delay is $\tau^* \approx 1/(4f_{\min})$ where $f_{\min}$ is the lowest frequency of interest \citep{fraser1986}. This places delay taps at quarter-period intervals, maximizing the angle between successive gradient vectors and hence the Fisher rank. Cerebellar parallel fibers (delays 2--8 ms) and thalamocortical loops (delays 10--100 ms) operate in ranges appropriate for beta/gamma and theta/delta bands respectively.
+
+\subsection{Control Leverage: Where Information Injection Matters}
+
+A critical corollary of Takens embedding: \textbf{where you inject information determines how much dimensionality you affect}.
+
+The slow-frequency carrier IS the compressed high-dimensional program. Via Takens embedding, a perturbation to the slow waveform trajectory changes the \emph{entire} reconstructed state-space path. Injecting information at the low-frequency level gives access to high-dimensional outcomes---you are modifying the program, not just one moment of execution.
+
+By contrast, injecting information at high frequencies (gamma) affects only local, momentary output. Gamma is the readout layer---low-dimensional execution of whatever program the slow frequencies encode.
+
+\begin{center}
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Injection point} & \textbf{What is modified} & \textbf{Downstream effect} \\
+\midrule
+Low-F (delta/theta) & Carrier trajectory & Entire high-D program changes \\
+High-F (gamma) & Execution/readout & Local, momentary effect only \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+This has immediate implications:
+\begin{itemize}
+    \item \textbf{Memory consolidation during sleep:} Writing to slow-wave carriers modifies the high-dimensional programs themselves, not just their readout.
+    \item \textbf{Motor learning:} Cerebellar plasticity at the delay-line level changes which programs get reconstructed from which slow-wave trajectories.
+    \item \textbf{Metabolic protection:} Slow-wave infrastructure is the high-leverage control layer; losing it means losing control over downstream dimensionality. This explains why biological systems invest heavily in maintaining slow-wave generation.
+    \item \textbf{Therapeutic targeting:} Interventions at gamma frequencies cannot restore missing program structure; only supporting slow-wave infrastructure can restore high-dimensional coordination.
+\end{itemize}
 
 \subsection{Implications for Artificial Systems}
 
@@ -419,30 +671,78 @@ If high-dimensional identifiable structure requires nested frequency architectur
 
 Neuromorphic computing architectures that incorporate these features \citep{indiveri2011neuromorphic,schuman2017survey} may achieve richer statistical structure than globally clocked systems. The key is not merely parallelism or speed, but the geometric structure of timing relationships.
 
+%=============================================================================
+\section{Applications}
+%=============================================================================
+
+The framework has implications across neuroscience, clinical medicine, and behavioral science.
+
+\subsection{Motor Control and the Cerebellum}
+
+The cerebellum's parallel fiber architecture may implement Takens embedding in hardware. Parallel fibers conduct at approximately 0.3--0.5 m/s \citep{eccles1967cerebellum}, creating delays of several milliseconds across the granular layer---a range appropriate for embedding signals in the beta/gamma band relevant for motor timing.
+
+\textbf{The cerebellum as Takens decoder:} Motor cortex generates slow-wave programs encoding complex motor sequences. The cerebellum receives these programs and, via delay-line architecture, reconstructs the full state-space trajectory. This explains why the cerebellum is essential for skilled movement: it unpacks the compressed program into real-time motor commands.
+
+\textbf{Chair flying / motor imagery:} Mental rehearsal of motor programs works because the slow-wave program can run through the cerebellar decoder without executing the movement. The Takens reconstruction is performed; only the final output is inhibited. This provides a mechanism for ``offline'' motor learning.
+
+\subsection{Memory Consolidation and Sleep}
+
+Slow-wave sleep is dominated by delta oscillations that carry compressed memory programs:
+
+\textbf{Hippocampal replay:} During sleep, the hippocampus replays compressed sequences at time scales much faster than original experience. This ``replay'' is Takens reconstruction---delay coordinates applied to slow oscillations recover the full episodic structure.
+
+\textbf{Why sleep consolidates memory:} Memory transfer from hippocampus to neocortex requires the receiving circuits to sample the slow-wave trajectory at appropriate delays. This cannot be rushed; the information \emph{is} the temporal unfolding. Sleep provides the time for complete Takens reconstruction.
+
+\textbf{Why dreams are fragmentary:} Partial or noisy Takens reconstruction from incomplete slow-wave programs produces the characteristic fragmented, recombinant quality of dream experience.
+
+\subsection{Clinical Hypotheses: Dimensional Collapse in Pathology}
+
+The framework suggests testable hypotheses about pathological states characterized by reduced neural complexity:
+
+\textbf{Hypothesis (motor neuron disease):} If motor coordination depends on high-dimensional PAC structure, then degeneration of cortical interneurons that maintain slow-wave infrastructure could reduce Fisher rank below the threshold needed for coordinated motor output. This predicts that PAC degradation should precede motor symptoms---a testable prediction.
+
+\textbf{Hypothesis (depression):} If reduced neural complexity accompanies depression (as some EEG studies suggest, though evidence is mixed \citep{goldberger2002complexity}), the framework offers one possible mechanism: degraded slow-wave scaffolding $\to$ reduced PAC $\to$ loss of high-dimensional cognitive flexibility. If correct, interventions that restore oscillatory structure (exercise, rhythmic activity, sleep hygiene) should show corresponding PAC normalization. This remains speculative pending systematic PAC measurements in depression.
+
+These are speculative applications that require empirical validation. The core mathematical contribution---the Fisher rank analysis---stands independently of whether these clinical hypotheses prove correct.
+
 \subsection{Limitations}
 
 This analysis makes several idealizations:
 \begin{enumerate}
-    \item \textbf{Idealized oscillator models}: Real biological oscillations have amplitude dynamics, non-sinusoidal waveforms, and complex coupling functions.
+    \item \textbf{Idealized oscillator models}: Real biological oscillations have amplitude dynamics, non-sinusoidal waveforms, and complex coupling functions. The sinusoidal model captures the essential mechanism but not the full complexity.
 
-    \item \textbf{Gaussian noise}: The explicit calculations assume Gaussian observation noise; non-Gaussian cases may differ quantitatively.
+    \item \textbf{Gaussian noise}: The explicit calculations assume Gaussian observation noise; non-Gaussian cases may differ quantitatively (though the rank arguments remain valid).
 
-    \item \textbf{Known carrier phase}: The theta-gamma example conditions on known $\phi_\gamma$; in practice, both phases must be estimated jointly.
+    \item \textbf{Known frequencies and coupling strengths}: We treat frequencies $\omega_k$ and modulation depths $\alpha_j$ as known. If these are unknown nuisance parameters, the augmented Fisher matrix has additional rows/columns, potentially reducing effective rank for the phase parameters of interest.
 
-    \item \textbf{Single-sample Fisher information}: We compute Fisher information for single observations; temporal sequences provide additional structure.
+    \item \textbf{Carrier phase extraction}: The model conditions on the carrier phase being extractable via Hilbert transform. In practice, this introduces estimation error not captured here.
+
+    \item \textbf{Generic conditions}: Proposition \ref{prop:rank}(iii) assumes ``generic'' sampling. Pathological cases (e.g., sampling only at carrier zero-crossings) can reduce rank.
 \end{enumerate}
 
-Despite these limitations, the core insight---that cross-scale coupling activates identifiability of slow variables from fast observations---should be robust across more realistic models.
+Despite these limitations, the core insight---that cross-scale coupling makes slow phases \emph{present in} the fast-band likelihood, enabling identification with sufficient observations---should be robust across more realistic models.
 
 %=============================================================================
 \section{Conclusion}
 %=============================================================================
 
-Nested frequency hierarchies are not merely a convenient encoding scheme. They are a mechanism for creating \emph{identifiable} high-dimensional statistical structure. Each frequency band contributes a potential phase parameter; cross-scale coupling (phase-amplitude modulation) makes these parameters jointly estimable from partial observations; and the resulting Fisher information structure has dimension scaling with the number of nested bands.
+We have presented an information-geometric framework analyzing how phase-amplitude coupling creates identifiable statistical structure in nested oscillatory systems.
 
-Global clock synchronization destroys this structure. By making all relative phases deterministic functions of a single clock, synchronization collapses the identifiable parameter family to one dimension. This is a geometric fact, not an implementation detail.
+\textbf{The core contributions:}
 
-The identifiability gap between nested biological systems and clock-synchronized artificial systems provides one explanation for persistent differences in their capabilities. Whether this gap can be bridged by alternative computing architectures---those that preserve multiscale asynchronous phase structure---remains an important open question.
+\begin{enumerate}
+    \item \textbf{Phase-amplitude coupling creates identifiability} (Theorem \ref{thm:coupling}): Slow phases enter the fast-band likelihood, enabling statistical estimation. Without PAC, slow phases are absent from observations, not merely hard to estimate.
+
+    \item \textbf{Multi-sample observations achieve full rank} (Proposition \ref{prop:rank}): A single scalar observation has Fisher rank $\leq 1$. With $N \geq K-1$ generic observations, coupling enables identification of all $K-1$ slow-band phases.
+
+    \item \textbf{Clock synchronization collapses dimension} (Theorem \ref{thm:clock}): Global clock locking constrains relative phases to a 1D submanifold, limiting Fisher rank to at most 1 regardless of observation count.
+\end{enumerate}
+
+\textbf{The identifiability gap:} Biological systems with $K$ nested coupled bands can achieve Fisher rank up to $K-1$ (Corollary \ref{cor:gap}). Clock-synchronized systems are limited to rank 1. This gap of up to $K-2$ dimensions is geometric---it reflects fundamental constraints on what can be identified from observations.
+
+\textbf{Connections to biological function:} We suggest (but do not prove) that Takens delay embedding provides a mechanism by which neural delay architectures convert temporal structure into high-dimensional spatial coordinates, and that this may explain aspects of motor control, memory consolidation, and sleep. These applications are speculative and require empirical validation.
+
+Whether artificial systems can achieve similar high-dimensional identifiable structure by adopting nested asynchronous architectures remains an open question for future work.
 
 %=============================================================================
 \section*{Acknowledgements}
@@ -473,6 +773,15 @@ Buzs\'aki, G. (2006). \emph{Rhythms of the Brain}. Oxford University Press.
 \bibitem[Canolty and Knight(2010)]{canolty2010functional}
 Canolty, R.~T., Knight, R.~T. (2010). The functional role of cross-frequency coupling. \emph{Trends in Cognitive Sciences}, 14(11), 506--515.
 
+\bibitem[Casdagli et al.(1991)]{casdagli1991state}
+Casdagli, M., et al. (1991). State space reconstruction in the presence of noise. \emph{Physica D}, 51, 52--98.
+
+\bibitem[Eccles et al.(1967)]{eccles1967cerebellum}
+Eccles, J.~C., Ito, M., Szentágothai, J. (1967). \emph{The Cerebellum as a Neuronal Machine}. Springer.
+
+\bibitem[Goldberger et al.(2002)]{goldberger2002complexity}
+Goldberger, A.~L., et al. (2002). Fractal dynamics in physiology: Alterations with disease and aging. \emph{Proceedings of the National Academy of Sciences}, 99, 2466--2472.
+
 \bibitem[Helm et al.(2017)]{helm2017annual}
 Helm, B., et al. (2017). Annual rhythms that underlie phenology: biological time-keeping meets environmental change. \emph{Proceedings of the Royal Society B}, 284, 20170046.
 
@@ -490,6 +799,12 @@ Schuman, C.~D., et al. (2017). A survey of neuromorphic computing and neural net
 
 \bibitem[Todd(2026)]{todd2026intelligence}
 Todd, I. (2026). Intelligence as high-dimensional coherence: The observable dimensionality bound and computational tractability. \emph{BioSystems}, 258, 105704.
+
+\bibitem[Takens(1981)]{takens1981}
+Takens, F. (1981). Detecting strange attractors in turbulence. In \emph{Dynamical Systems and Turbulence} (pp. 366--381). Springer.
+
+\bibitem[Fraser and Swinney(1986)]{fraser1986}
+Fraser, A.~M. and Swinney, H.~L. (1986). Independent coordinates for strange attractors from mutual information. \emph{Physical Review A}, 33(2), 1134--1140.
 
 \end{thebibliography}
 

@@ -3,53 +3,93 @@
 \providecommand\HyField@AuxAddToFields[1]{}
 \providecommand\HyField@AuxAddToCoFields[2]{}
 \citation{buzsaki2006rhythms}
-\citation{lloyd2006ultradian}
-\citation{helm2017annual}
-\citation{todd2026intelligence}
+\citation{lloyd2006ultradian,helm2017annual}
 \@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
-\citation{amari2016information,nakahara2002information}
 \citation{todd2026intelligence}
-\@writefile{toc}{\contentsline {subsection}{\numberline {1.1}Main Results}{2}{subsection.1.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {1.2}Relation to Prior Work}{2}{subsection.1.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {2}Preliminaries}{2}{section.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Statistical Manifolds and Fisher Information}{2}{subsection.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.1}Main Contributions}{2}{subsection.1.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.2}Notation}{3}{subsection.1.2}\protected@file@percent }
+\newlabel{eq:param_def}{{1}{3}{Notation}{equation.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Preliminaries}{4}{section.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Statistical Manifolds and Fisher Information}{4}{subsection.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Phase Variables and the Torus}{4}{subsection.2.2}\protected@file@percent }
+\newlabel{lem:torus}{{2}{4}{Gauge-fixed parameterization}{theorem.2}{}}
 \citation{lisman2013theta}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Phase Variables and the Torus}{3}{subsection.2.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Nested Frequency Hierarchies}{3}{subsection.2.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {3}Product Structure from Nested Frequencies}{3}{section.3}\protected@file@percent }
-\newlabel{sec:product}{{3}{3}{Product Structure from Nested Frequencies}{section.3}{}}
-\newlabel{thm:product}{{1}{3}{Product manifold structure}{theorem.1}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {4}Coupling Activates Fisher Rank}{4}{section.4}\protected@file@percent }
-\newlabel{sec:coupling}{{4}{4}{Coupling Activates Fisher Rank}{section.4}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Independent Bands: Additive Rank}{4}{subsection.4.1}\protected@file@percent }
-\newlabel{prop:additive}{{3}{4}{Additive rank under independence}{theorem.3}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Coupled Bands: Emergent Rank}{4}{subsection.4.2}\protected@file@percent }
-\newlabel{thm:coupling}{{4}{4}{Coupling activates rank}{theorem.4}{}}
-\citation{todd2026intelligence}
-\@writefile{toc}{\contentsline {section}{\numberline {5}Clock Synchronization Collapses Dimension}{5}{section.5}\protected@file@percent }
-\newlabel{sec:clock}{{5}{5}{Clock Synchronization Collapses Dimension}{section.5}{}}
-\newlabel{thm:clock}{{7}{5}{Clock collapse}{theorem.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Observation Model: Phase-Amplitude Coupling}{5}{subsection.2.3}\protected@file@percent }
+\newlabel{def:observation}{{4}{5}{Nested frequency observation model}{theorem.4}{}}
+\newlabel{eq:signal}{{3}{5}{Nested frequency observation model}{equation.3}{}}
+\newlabel{ex:theta_gamma_intro}{{5}{5}{Theta-gamma coupling}{theorem.5}{}}
+\newlabel{eq:theta_gamma}{{4}{5}{Theta-gamma coupling}{equation.4}{}}
+\newlabel{rem:observation_type}{{6}{5}{Raw signal vs.\ extracted envelope}{theorem.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4}Multi-Sample Observations and Fisher Rank}{6}{subsection.2.4}\protected@file@percent }
+\newlabel{eq:outer_product}{{5}{6}{Multi-Sample Observations and Fisher Rank}{equation.5}{}}
+\newlabel{eq:fisher_sum}{{6}{6}{Multi-Sample Observations and Fisher Rank}{equation.6}{}}
+\newlabel{prop:rank}{{8}{6}{Fisher rank from multi-sample observations}{theorem.8}{}}
+\newlabel{rem:local_global}{{10}{7}{Local vs.\ global identifiability}{theorem.10}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Fisher Information Under Independence}{7}{section.3}\protected@file@percent }
+\newlabel{sec:independence}{{3}{7}{Fisher Information Under Independence}{section.3}{}}
+\newlabel{prop:diagonal}{{11}{7}{Block-diagonal Fisher under independence}{theorem.11}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Coupling Activates Identifiability}{8}{section.4}\protected@file@percent }
+\newlabel{sec:coupling}{{4}{8}{Coupling Activates Identifiability}{section.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}General Result}{8}{subsection.4.1}\protected@file@percent }
+\newlabel{thm:coupling}{{13}{8}{Coupling activates likelihood dependence}{theorem.13}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Worked Example: Theta-Gamma System}{9}{subsection.4.2}\protected@file@percent }
+\newlabel{ex:theta_gamma}{{14}{9}{Fisher information for theta-gamma coupling}{theorem.14}{}}
+\newlabel{eq:fim_example}{{14}{9}{Fisher information for theta-gamma coupling}{equation.14}{}}
+\newlabel{ex:fisher_metric_K3}{{15}{10}{Explicit Fisher metric for $K=3$}{theorem.15}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}What Coupling Does \emph  {Not} Do}{10}{subsection.4.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5}Clock Synchronization Collapses Dimension}{11}{section.5}\protected@file@percent }
+\newlabel{sec:clock}{{5}{11}{Clock Synchronization Collapses Dimension}{section.5}{}}
+\newlabel{def:clock}{{16}{11}{Clock synchronization}{theorem.16}{}}
+\newlabel{thm:clock}{{17}{11}{Clock collapse}{theorem.17}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Geometric contrast between nested coupling and clock synchronization for $K=3$ bands. (a) Under nested coupling, trajectories can explore the full 2-torus $\mathbb  {T}^2$ of relative phase offsets $(\psi _1, \psi _2)$. (b) Under clock synchronization, all relative phases are deterministic functions of a single base clock, constraining the system to a 1-dimensional closed curve (red). The clock curve cannot access most of the torus---this is the geometric origin of dimensional collapse.}}{12}{figure.1}\protected@file@percent }
+\newlabel{fig:torus_clock}{{1}{12}{Geometric contrast between nested coupling and clock synchronization for $K=3$ bands. (a) Under nested coupling, trajectories can explore the full 2-torus $\T ^2$ of relative phase offsets $(\psi _1, \psi _2)$. (b) Under clock synchronization, all relative phases are deterministic functions of a single base clock, constraining the system to a 1-dimensional closed curve (red). The clock curve cannot access most of the torus---this is the geometric origin of dimensional collapse}{figure.1}{}}
+\newlabel{rem:assumptions}{{18}{12}{Comparing assumptions across models}{theorem.18}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Application to Digital Systems}{13}{subsection.5.1}\protected@file@percent }
+\newlabel{rem:digital}{{19}{13}{Nuances for digital systems}{theorem.19}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Summary of Statistical Structure}{13}{section.6}\protected@file@percent }
+\newlabel{sec:summary}{{6}{13}{Summary of Statistical Structure}{section.6}{}}
+\newlabel{cor:gap}{{21}{13}{Identifiability gap}{theorem.21}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Fisher information structure under different oscillatory architectures. \textsuperscript  {\dag  }Requires direct observation of each band. \textsuperscript  {*}With $N \geq K-1$ informative observations; coupling makes slow phases enter the fast-band likelihood.}}{14}{table.1}\protected@file@percent }
+\newlabel{tab:comparison}{{1}{14}{Fisher information structure under different oscillatory architectures. \textsuperscript {\dag }Requires direct observation of each band. \textsuperscript {*}With $N \geq K-1$ informative observations; coupling makes slow phases enter the fast-band likelihood}{table.1}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Fisher rank under nested coupling vs.\ clock synchronization. (a) Rank of Fisher information matrix as a function of sample size $N$. The nested model achieves full rank $K-1=3$ once $N \geq K-1$; the clock model is constrained to rank 1 regardless of $N$. (b) Eigenvalue spectrum for the nested model with $N=10$ observations, showing three nonzero eigenvalues corresponding to the three identifiable slow-phase parameters. \textbf  {Simulation parameters:} $K=4$ bands with slow modulators at 2, 5, 8 Hz and carrier at 40 Hz; modulation depths $\alpha _j = 0.3$; noise $\sigma = 0.1$; observations uniformly sampled on $[0, 1]$ s with small random jitter.}}{14}{figure.2}\protected@file@percent }
+\newlabel{fig:fisher_rank}{{2}{14}{Fisher rank under nested coupling vs.\ clock synchronization. (a) Rank of Fisher information matrix as a function of sample size $N$. The nested model achieves full rank $K-1=3$ once $N \geq K-1$; the clock model is constrained to rank 1 regardless of $N$. (b) Eigenvalue spectrum for the nested model with $N=10$ observations, showing three nonzero eigenvalues corresponding to the three identifiable slow-phase parameters. \textbf {Simulation parameters:} $K=4$ bands with slow modulators at 2, 5, 8 Hz and carrier at 40 Hz; modulation depths $\alpha _j = 0.3$; noise $\sigma = 0.1$; observations uniformly sampled on $[0, 1]$ s with small random jitter}{figure.2}{}}
 \citation{buzsaki2006rhythms,lisman2013theta}
-\@writefile{toc}{\contentsline {section}{\numberline {6}Fisher Rank Comparison}{6}{section.6}\protected@file@percent }
-\newlabel{sec:comparison}{{6}{6}{Fisher Rank Comparison}{section.6}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Dimensional comparison of oscillatory architectures.}}{6}{table.1}\protected@file@percent }
-\newlabel{tab:comparison}{{1}{6}{Dimensional comparison of oscillatory architectures}{table.1}{}}
-\newlabel{cor:gap}{{8}{6}{Dimensional gap}{theorem.8}{}}
-\citation{todd2026intelligence}
-\citation{indiveri2011neuromorphic}
-\@writefile{toc}{\contentsline {section}{\numberline {7}Discussion}{7}{section.7}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {7.1}Why Biology Uses Nested Frequencies}{7}{subsection.7.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {7.2}Why Clocked Systems Are Dimensionally Impoverished}{7}{subsection.7.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {7.3}Implications for Substrate-Independent Intelligence}{7}{subsection.7.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {7.4}Limitations}{7}{subsection.7.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {7}Discussion}{15}{section.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.1}What Nesting Contributes Beyond Multiple Oscillators}{15}{subsection.7.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.2}Why Biology Uses Nested Frequencies}{15}{subsection.7.2}\protected@file@percent }
+\citation{takens1981}
+\citation{casdagli1991state}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.3}The Phase Manifold as Continuous Timing Structure}{16}{subsection.7.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.4}Takens Embedding: Low Frequency Carries High Dimension}{16}{subsection.7.4}\protected@file@percent }
+\citation{fraser1986}
+\citation{fraser1986}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {7.4.1}Formal Connection: Delay Vectors as Multi-Sample Observations}{17}{subsubsection.7.4.1}\protected@file@percent }
+\newlabel{prop:delay}{{22}{17}{Delay embedding and Fisher rank}{theorem.22}{}}
+\newlabel{eq:delay_fisher}{{21}{17}{Delay embedding and Fisher rank}{equation.21}{}}
+\citation{indiveri2011neuromorphic,schuman2017survey}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.5}Control Leverage: Where Information Injection Matters}{18}{subsection.7.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.6}Implications for Artificial Systems}{18}{subsection.7.6}\protected@file@percent }
+\citation{eccles1967cerebellum}
+\citation{goldberger2002complexity}
+\@writefile{toc}{\contentsline {section}{\numberline {8}Applications}{19}{section.8}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.1}Motor Control and the Cerebellum}{19}{subsection.8.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.2}Memory Consolidation and Sleep}{19}{subsection.8.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.3}Clinical Hypotheses: Dimensional Collapse in Pathology}{19}{subsection.8.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.4}Limitations}{20}{subsection.8.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {9}Conclusion}{20}{section.9}\protected@file@percent }
 \bibstyle{plainnat}
 \bibcite{amari2016information}{{1}{2016}{{Amari}}{{}}}
 \bibcite{buzsaki2006rhythms}{{2}{2006}{{Buzs\'aki}}{{}}}
-\bibcite{helm2017annual}{{3}{2017}{{Helm et al.}}{{}}}
-\bibcite{indiveri2011neuromorphic}{{4}{2011}{{Indiveri et al.}}{{}}}
-\bibcite{lisman2013theta}{{5}{2013}{{Lisman and Jensen}}{{}}}
-\@writefile{toc}{\contentsline {section}{\numberline {8}Conclusion}{8}{section.8}\protected@file@percent }
-\bibcite{lloyd2006ultradian}{{6}{2006}{{Lloyd and Rossi}}{{}}}
-\bibcite{nakahara2002information}{{7}{2002}{{Nakahara and Amari}}{{}}}
-\bibcite{todd2026intelligence}{{8}{2026}{{Todd}}{{}}}
-\gdef \@abspage@last{9}
+\bibcite{canolty2010functional}{{3}{2010}{{Canolty and Knight}}{{}}}
+\bibcite{casdagli1991state}{{4}{1991}{{Casdagli et al.}}{{}}}
+\bibcite{eccles1967cerebellum}{{5}{1967}{{Eccles et al.}}{{}}}
+\bibcite{goldberger2002complexity}{{6}{2002}{{Goldberger et al.}}{{}}}
+\bibcite{helm2017annual}{{7}{2017}{{Helm et al.}}{{}}}
+\bibcite{indiveri2011neuromorphic}{{8}{2011}{{Indiveri et al.}}{{}}}
+\bibcite{lisman2013theta}{{9}{2013}{{Lisman and Jensen}}{{}}}
+\bibcite{lloyd2006ultradian}{{10}{2006}{{Lloyd and Rossi}}{{}}}
+\bibcite{schuman2017survey}{{11}{2017}{{Schuman et al.}}{{}}}
+\bibcite{todd2026intelligence}{{12}{2026}{{Todd}}{{}}}
+\bibcite{takens1981}{{13}{1981}{{Takens}}{{}}}
+\bibcite{fraser1986}{{14}{1986}{{Fraser and Swinney}}{{}}}
+\gdef \@abspage@last{22}
